@@ -1,4 +1,4 @@
-export class CustomError {
+export class ResponseError {
   public status!: number
   public message!: string
   public additionalInfo!: unknown

@@ -10,7 +10,7 @@ const connectDb = async (): Promise<void> => {
     winstonLogger.info('connect success mysql db')
     return Promise.resolve()
   } catch (error) {
-    throw error
+    console.log(error)
   }
 }
 

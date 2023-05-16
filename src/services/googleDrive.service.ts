@@ -1,6 +1,6 @@
 import env from '@/config/env'
-import fs from 'fs'
 import { google } from 'googleapis'
+import { Stream } from 'stream'
 
 export class GoogleDriveService {
   private driveClient
@@ -20,17 +20,19 @@ export class GoogleDriveService {
     })
   }
 
-  async createFile(fileName: string, filePath: string, fileMimeType: string, folderId = env.GOOGLE_DRIVE_FORDER_ID) {
+  async createFile(fileName: string, fileObject: Express.Multer.File, folderId = env.GOOGLE_DRIVE_FORDER_ID) {
     try {
+      const bufferStream = new Stream.PassThrough()
+      bufferStream.end(fileObject.buffer)
       const res = await this.driveClient.files.create({
         requestBody: {
           name: fileName,
-          mimeType: fileMimeType,
+
           parents: folderId ? [folderId] : []
         },
         media: {
-          mimeType: fileMimeType,
-          body: fs.createReadStream(filePath)
+          mimeType: 'image/jpeg',
+          body: bufferStream
         }
       })
       return res
@@ -53,12 +55,27 @@ export class GoogleDriveService {
       throw error
     }
   }
+
+  async deleteFile(id: string) {
+    try {
+      const res = await this.driveClient.files.delete({
+        fileId: id
+      })
+      return res
+    } catch (error) {
+      throw error
+    }
+  }
+
   async getFile(id: string) {
     try {
       const getUrl = await this.driveClient.files.get({
         fileId: id,
-        fields: 'thumbnailLink webContentLink webViewLink'
+        fields: 'thumbnailLink , webContentLink , webViewLink'
       })
+
+      console.log(getUrl)
+
       return getUrl
     } catch (error) {
       throw error

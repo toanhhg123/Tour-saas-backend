@@ -1,6 +1,14 @@
 import { sequelize as sequelizeMysql } from '@/config/db/mysql.db'
-import type { CreationOptional, InferAttributes, InferCreationAttributes } from 'sequelize'
+import type {
+  Association,
+  CreationOptional,
+  HasManyGetAssociationsMixin,
+  InferAttributes,
+  InferCreationAttributes,
+  NonAttribute
+} from 'sequelize'
 import { DataTypes, Model } from 'sequelize'
+import type Tour from './tour.model'
 
 class Location extends Model<InferAttributes<Location>, InferCreationAttributes<Location>> {
   declare id: CreationOptional<string>
@@ -8,10 +16,12 @@ class Location extends Model<InferAttributes<Location>, InferCreationAttributes<
   declare desc?: string
 
   // public readonly roles?: Role[]
+  declare getTours: HasManyGetAssociationsMixin<Tour>
+  declare tours?: NonAttribute<Tour[]>
 
-  // public static associations: {
-  //   users: BelongsToMany<Location, Role>
-  // }
+  declare static associations: {
+    tours: Association<Location, Tour>
+  }
 
   public createdAt!: CreationOptional<Date>
   public updatedAt!: CreationOptional<Date>

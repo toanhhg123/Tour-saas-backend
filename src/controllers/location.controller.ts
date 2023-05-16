@@ -1,4 +1,4 @@
-import { Location } from '@/models'
+import { Location, Tour } from '@/models'
 import { ResponseError } from '@/models/CustomError.model'
 import type IResponseObject from '@/types/ResponseObject'
 import type { NextFunction, Request, Response } from 'express'
@@ -11,7 +11,7 @@ export async function getAll(
   try {
     console.log('locations')
 
-    const location = await Location.findAll()
+    const location = await Location.findAll({ include: [{ model: Tour, as: 'tours' }] })
 
     const response: IResponseObject<Location[]> = {
       message: 'query success',

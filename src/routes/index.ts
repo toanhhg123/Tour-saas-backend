@@ -1,13 +1,14 @@
+import { handleError, notFound } from '@/middlewares/error.middleware'
+import accountRoute from '@/routes/account.route'
+import authRoute from '@/routes/auth.route'
 import { type Express } from 'express'
-import locationRoute from '@/routes/location.route'
-import tourRoute from '@/routes/tour.route'
-import tourImageRoute from '@/routes/tourImage.route'
-import { notFound, handleError } from '@/middlewares/error.middleware'
 
-const useRoutes = (app: Express): void => {
-  app.use('/api/v1/location', locationRoute)
-  app.use('/api/v1/tour', tourRoute)
-  app.use('/api/v1/tourImage', tourImageRoute)
+const useRoutes = async (app: Express): Promise<void> => {
+  app.use('/api/v1/account', accountRoute)
+
+  app.use('/api/v1/auth', authRoute)
+  // app.use('/api/v1/tourImage', tourImageRoute)
+  // app.use('/api/v1/tourService', tourServiceRoute)
 
   app.use(notFound)
   app.use(handleError)

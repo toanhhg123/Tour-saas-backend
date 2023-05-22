@@ -8,8 +8,8 @@ export const notFound = (req: Request, res: Response, next: NextFunction) => {
   next(err)
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-explicit-any
-export function handleError(error: any, request: Request, response: Response, next: NextFunction) {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const handleErrorResponse = (error: any): ResponseError => {
   let customError = error
 
   if (!(error instanceof ResponseError)) {
@@ -19,6 +19,12 @@ export function handleError(error: any, request: Request, response: Response, ne
         : 'Oh no, this is embarrasing. We are having troubles my friend'
     )
   }
-  console.log({ errors: customError.additionalInfo?.details })
-  return response.status((customError as ResponseError).status).json(customError)
+
+  return customError
+}
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-explicit-any
+export function handleError(error: any, request: Request, response: Response, next: NextFunction) {
+  const errorRes = handleErrorResponse(error)
+  return response.status(errorRes.status).json(errorRes)
 }

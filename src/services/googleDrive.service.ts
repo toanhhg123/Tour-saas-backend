@@ -74,8 +74,6 @@ export class GoogleDriveService {
         fields: 'thumbnailLink , webContentLink , webViewLink'
       })
 
-      console.log(getUrl)
-
       return getUrl
     } catch (error) {
       throw error

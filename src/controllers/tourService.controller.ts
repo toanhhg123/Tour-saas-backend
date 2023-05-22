@@ -1,35 +1,21 @@
-// import { Tour, TourImage } from '@/models'
+// import { TourService } from '@/models'
 // import { ResponseError } from '@/models/CustomError.model'
-// import googleDriveService from '@/services/googleDrive.service'
 // import type IResponseObject from '@/types/ResponseObject'
 // import type { NextFunction, Request, Response } from 'express'
 
 // export async function create(
-//   req: Request<unknown, unknown, TourImage>,
+//   req: Request<unknown, unknown, TourService>,
 //   res: Response,
 //   next: NextFunction
 // ): Promise<Response<IResponseObject<unknown>> | void> {
 //   try {
 //     if (req.bodyValid?.error) throw new ResponseError('Invalid information submitted', 400, req.bodyValid.error)
-//     if (!req.file) throw new ResponseError('not found file', 404)
-//     if (!(await Tour.findByPk(req.body.tourId))) throw new ResponseError('tour not found', 404)
 
-//     const file = await googleDriveService.createFile('testfile', req.file)
-//     await googleDriveService.publicFile(file.data.id || '')
-//     const { data } = await googleDriveService.getFile(file.data.id || '')
+//     const tourService = await TourService.create(req.body)
 
-//     const tourImage = await TourImage.create({
-//       alt: req.file.originalname,
-//       tourId: req.body.tourId,
-//       webContentLink: data.webContentLink || '',
-//       thumbnailLink: data.thumbnailLink || '',
-//       webViewLink: data.webViewLink || '',
-//       idImageGoole: file.data.id || ''
-//     })
-
-//     const response: IResponseObject<TourImage> = {
+//     const response: IResponseObject<TourService> = {
 //       message: 'query success',
-//       element: tourImage,
+//       element: tourService,
 //       status: 'ok'
 //     }
 
@@ -84,17 +70,15 @@
 // // }
 
 // export async function remove(
-//   req: Request<{ id: string; idImageGoogle: string }, unknown, Location>,
+//   req: Request<{ id: string }, unknown, unknown>,
 //   res: Response,
 //   next: NextFunction
 // ): Promise<Response<IResponseObject<unknown>> | void> {
 //   try {
-//     const [rowDeleted] = await Promise.all([
-//       TourImage.destroy({ where: { id: req.params.id } }),
-//       googleDriveService.deleteFile(req.params.idImageGoogle)
-//     ])
+//     const rowDeleted = await TourService.destroy({ where: { id: req.params.id } })
 
 //     if (!rowDeleted) throw new ResponseError('delete faild', 404)
+
 //     const response: IResponseObject<number> = {
 //       message: 'query success',
 //       element: rowDeleted,

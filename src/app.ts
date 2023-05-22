@@ -3,15 +3,18 @@ import useMiddlewares from '@/middlewares/index.middleware'
 import useRoutes from '@/routes'
 import type { Express } from 'express'
 import express from 'express'
-const app: Express = express()
 
-useMiddlewares(app)
+const createApp = async () => {
+  try {
+    const app: Express = express()
 
-connectDb()
-  .then()
-  .catch((e) => {
-    console.log({ errorDataConnect: e })
-  })
+    await useMiddlewares(app)
+    await connectDb()
+    await useRoutes(app)
+    return app
+  } catch (error) {
+    throw error
+  }
+}
 
-useRoutes(app)
-export default app
+export default createApp

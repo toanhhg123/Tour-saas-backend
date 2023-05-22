@@ -11,6 +11,7 @@ import type {
 } from 'sequelize'
 import { DataTypes, Model } from 'sequelize'
 import type TourImage from './tourImage.model'
+import type TourService from './tourService.model'
 
 export interface ITour {
   name: string
@@ -53,10 +54,14 @@ class Tour extends Model<InferAttributes<Tour>, InferCreationAttributes<Tour>> {
   // public accountId!: ForeignKey<Account['id']>
 
   declare getTourImages: HasManyGetAssociationsMixin<TourImage>
+  declare getTourServices: HasManyGetAssociationsMixin<TourService>
+
   declare toursImages?: NonAttribute<TourImage[]>
+  declare tourServices?: NonAttribute<TourService[]>
 
   declare static associations: {
     tourImages: Association<Tour, TourImage>
+    tourServices: Association<Tour, TourService>
   }
 
   public createdAt!: CreationOptional<Date>

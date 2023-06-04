@@ -11,15 +11,11 @@ export const authorize = (arr?: TypeRole[]) => (req: Request, res: Response, nex
     if (!token) throw new ResponseError('no authencation', 401)
 
     const decode = JwtService.decodeToken<IUserJwt>(token)
-
     const { role } = decode
-
-    console.log(role)
-    console.log(arr)
-    if (!arr?.some((ar) => ar === role)) throw new ResponseError('forbidden', 403)
+    if (arr && !arr.some((ar) => ar === role)) throw new ResponseError('forbidden', 403)
 
     req.user = decode
-    next()
+    return next()
   } catch (error) {
     throw error
   }

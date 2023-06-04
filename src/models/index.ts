@@ -2,7 +2,14 @@ import Account from '@/models/account.model'
 import Entity from '@/models/entity.model'
 import Permissions from '@/models/permission.model'
 import Role from '@/models/role.model'
+import AirBooking from './airBooking.model'
+import { default as AirBookingPayment, default as TourPayment } from './airBookingPayment.model'
+import Booking from './booking.model'
+import BookingPayment from './bookingPayment.model'
 import Company from './company.model'
+import Supplier from './supplier.model'
+import Tour from './tour.model'
+import TourService from './tourService.model'
 
 // roles
 Permissions.belongsTo(Role, { foreignKey: 'roleId', as: 'role' })
@@ -15,6 +22,28 @@ Account.belongsTo(Company, { foreignKey: 'companyId', as: 'company' })
 //role
 Role.hasMany(Permissions, { as: 'permissions', foreignKey: 'roleId' })
 Role.hasMany(Account, { foreignKey: 'roleId', as: 'accounts' })
+
+Tour.belongsTo(Account, { as: 'tourMan', foreignKey: 'tourManId' })
+Tour.belongsTo(Account, { as: 'tourGuide', foreignKey: 'tourGuideId' })
+
+TourService.belongsTo(Supplier, {
+  as: 'supplier',
+  foreignKey: 'supplierId'
+})
+TourService.belongsTo(Tour, { as: 'tour', foreignKey: 'tourId' })
+
+TourPayment.belongsTo(TourService, { as: 'tourService', foreignKey: 'serviceId' })
+
+Booking.belongsTo(Tour, { as: 'tour', foreignKey: 'tourId' })
+Booking.belongsTo(Account, { as: 'sale', foreignKey: 'saleId' })
+Booking.belongsTo(Account, { as: 'client', foreignKey: 'clientId' })
+
+BookingPayment.belongsTo(Booking, { as: 'booking', foreignKey: 'bookingId' })
+
+AirBooking.belongsTo(Tour, { as: 'tour', foreignKey: 'tourId' })
+AirBooking.belongsTo(Supplier, { as: 'supplier', foreignKey: 'supplierId' })
+
+AirBookingPayment.belongsTo(AirBooking, { as: 'airBooking', foreignKey: 'airBookingId' })
 
 // //init Entity
 // sequelize

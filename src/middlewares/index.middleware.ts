@@ -11,7 +11,14 @@ import { client } from '@/config/db/redis.db'
 const useMiddlewares = async (app: Express) => {
   await ConnectRedis()
 
-  app.use(cors())
+  app.use(
+    cors({
+      credentials: true,
+
+      origin: ['http://localhost:3000']
+    })
+  )
+
   app.use(helmet())
   app.use(
     session({
@@ -21,11 +28,11 @@ const useMiddlewares = async (app: Express) => {
       name: 'SAAS_TRAVEL_',
       secret: env.KEY_SESSION,
       resave: true,
-      saveUninitialized: true,
+      saveUninitialized: false,
       cookie: {
         secure: env.NODE_ENV === 'production',
         httpOnly: true,
-        maxAge: 24 * 7 * 60 * 1000
+        maxAge: 3600 * 24 * 7 * 1000
       }
     })
   )

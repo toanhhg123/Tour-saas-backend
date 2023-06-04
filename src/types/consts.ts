@@ -5,5 +5,7 @@ export const entites: IEntity = {
   Role: 'Roles',
   Company: 'Companies',
   Permission: 'Permissions',
-  Entity: 'Entities'
+  Entity: 'Entities',
+  Supplier: 'Suppliers',
+  TourPayment: 'TourPayment'
 }

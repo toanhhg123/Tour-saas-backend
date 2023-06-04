@@ -4,12 +4,14 @@ import {
   createPremisstion,
   finOneRole,
   login,
-  refreshToken
+  refreshToken,
+  logout
 } from '@/controllers/auth.controller'
 import { validateBody } from '@/middlewares/validate.middleware'
 import { validatePermission, validateRole } from '@/utils/validations'
 import { Router } from 'express'
 import { validateAuthRequest } from '../utils/validations'
+import { authorize } from '@/middlewares/auth.middeware'
 const router = Router()
 
 // router.get('/:id', findOne)
@@ -18,6 +20,7 @@ router.get('/roles', getAllRole)
 router.get('/role/:id', finOneRole)
 
 router.post('/refreshToken', refreshToken)
+router.post('/logout', authorize(), logout)
 
 router.post('/role', validateBody(validateRole), createRole)
 

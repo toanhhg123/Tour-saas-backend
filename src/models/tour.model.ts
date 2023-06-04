@@ -1,27 +1,39 @@
 import { sequelize as sequelizeMysql } from '@/config/db/mysql.db'
-import type Location from '@/models/location.model'
 import type {
   Association,
   CreationOptional,
-  ForeignKey,
   HasManyGetAssociationsMixin,
   InferAttributes,
   InferCreationAttributes,
   NonAttribute
 } from 'sequelize'
 import { DataTypes, Model } from 'sequelize'
+import type Account from './account.model'
 import type TourImage from './tourImage.model'
-import type TourService from './tourService.model'
+
+export enum TourType {
+  OPEN = 'open',
+  INCENTIVE = 'incentive',
+  OTHER = 'other'
+}
 
 export interface ITour {
+  id: string
   name: string
   desc?: string
-  transports: string[]
-  itineraries: string[]
-  accommodations: string[]
+  transport: string
   metatitle: string
-  locationId: string
+  route: string[]
+  departure: string
+  tranportId: string
+  visadate: Date
+  link: string
+  type: TourType
+  detailLink: string
   price: number
+  maxPax: number
+  tourManId: string
+  tourGuideId: string
 }
 
 const STRING_CONCAT = '<<--->>'
@@ -30,42 +42,48 @@ class Tour extends Model<InferAttributes<Tour>, InferCreationAttributes<Tour>> {
   declare name: string
   declare desc?: string
 
-  declare transports: string
-
-  declare itineraries: string
-
-  declare accommodations: string
+  declare transport: string
 
   declare metatitle: string
 
+  declare route: string
+
+  declare departure: string
+
+  declare tranportId: string
+
+  declare visadate: Date
+
+  declare link: string
+
+  declare type: TourType
+
+  declare detailLink: string
+
   declare price: number
 
-  public locationId!: ForeignKey<Location['id']>
+  declare maxPax: number
 
-  setTransports(value: string[]) {
-    this.setDataValue('transports', value.join(STRING_CONCAT))
+  declare tourManId: string
+
+  declare tourGuideId: string
+
+  declare createdAt: CreationOptional<Date>
+  declare updatedAt: CreationOptional<Date>
+
+  public setRoute(val: string[]) {
+    this.route = val.join(STRING_CONCAT)
   }
-  setItineraries(value: string[]) {
-    this.setDataValue('itineraries', value.join(STRING_CONCAT))
-  }
-  setAccommodations(value: string[]) {
-    this.setDataValue('accommodations', value.join(STRING_CONCAT))
-  }
-  // public accountId!: ForeignKey<Account['id']>
 
   declare getTourImages: HasManyGetAssociationsMixin<TourImage>
-  declare getTourServices: HasManyGetAssociationsMixin<TourService>
 
   declare toursImages?: NonAttribute<TourImage[]>
-  declare tourServices?: NonAttribute<TourService[]>
 
   declare static associations: {
     tourImages: Association<Tour, TourImage>
-    tourServices: Association<Tour, TourService>
+    tourMan: Association<Tour, Account>
+    tourGuide: Association<Tour, Account>
   }
-
-  public createdAt!: CreationOptional<Date>
-  public updatedAt!: CreationOptional<Date>
 }
 
 Tour.init(
@@ -78,16 +96,20 @@ Tour.init(
     name: {
       type: DataTypes.STRING
     },
-    locationId: {
-      type: DataTypes.UUID
-    },
+
     price: {
       type: DataTypes.DOUBLE,
       allowNull: false
     },
-    // accountId: {
-    //   type: DataTypes.UUID
-    // },
+    route: {
+      type: DataTypes.STRING,
+      get() {
+        return this.getDataValue('route').split(STRING_CONCAT)
+      }
+    },
+    departure: {
+      type: DataTypes.STRING
+    },
     desc: {
       type: DataTypes.TEXT,
       allowNull: true,
@@ -98,27 +120,29 @@ Tour.init(
       allowNull: true,
       defaultValue: ''
     },
-    transports: {
+    transport: {
       type: DataTypes.STRING,
-      defaultValue: '',
-      get() {
-        return this.getDataValue('transports').split(STRING_CONCAT)
-      }
+      defaultValue: ''
     },
-    itineraries: {
-      type: DataTypes.STRING,
-      defaultValue: '',
-      get() {
-        return this.getDataValue('itineraries').split(STRING_CONCAT)
-      }
+    visadate: {
+      type: DataTypes.DATE
     },
-    accommodations: {
-      type: DataTypes.STRING,
-      defaultValue: '',
-      get() {
-        return this.getDataValue('accommodations').split(STRING_CONCAT)
-      }
+    detailLink: {
+      type: DataTypes.STRING
     },
+    tourManId: {
+      type: DataTypes.UUID
+    },
+    tourGuideId: {
+      type: DataTypes.UUID
+    },
+    link: {
+      type: DataTypes.STRING
+    },
+    maxPax: {
+      type: DataTypes.DOUBLE
+    },
+
     createdAt: {
       type: DataTypes.DATE,
       allowNull: false,
@@ -128,17 +152,19 @@ Tour.init(
       type: DataTypes.DATE,
       allowNull: false,
       defaultValue: DataTypes.NOW
+    },
+    type: {
+      type: DataTypes.ENUM(...Object.values(TourType)),
+      defaultValue: TourType.OTHER
+    },
+    tranportId: {
+      type: DataTypes.STRING
     }
   },
   {
     tableName: 'Tours',
     timestamps: true,
-    sequelize: sequelizeMysql,
-    setterMethods: {
-      transportsArr(value: string[]) {
-        this.setDataValue('transports', value.join(STRING_CONCAT))
-      }
-    }
+    sequelize: sequelizeMysql
   }
 )
 

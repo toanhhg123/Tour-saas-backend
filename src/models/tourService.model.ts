@@ -2,6 +2,7 @@ import { sequelize as sequelizeMysql } from '@/config/db/mysql.db'
 import type Tour from '@/models/tour.model'
 import type { CreationOptional, ForeignKey, InferAttributes, InferCreationAttributes } from 'sequelize'
 import { DataTypes, Model } from 'sequelize'
+import type Supplier from './supplier.model'
 
 export enum TypeTour {
   OPTION = 'OPTION',
@@ -25,7 +26,13 @@ class TourService extends Model<InferAttributes<TourService>, InferCreationAttri
   declare price: number
   declare desc: string
   declare type: TypeTour
+  declare destination: string
+  declare quantity: string
+  declare details: string
+  declare note: string
+
   public tourId!: ForeignKey<Tour['id']>
+  public supplierId!: ForeignKey<Supplier['id']>
   public createdAt!: CreationOptional<Date>
   public updatedAt!: CreationOptional<Date>
 }
@@ -38,6 +45,9 @@ TourService.init(
       defaultValue: DataTypes.UUIDV4
     },
     tourId: {
+      type: DataTypes.UUID
+    },
+    supplierId: {
       type: DataTypes.UUID
     },
     name: {
@@ -65,6 +75,18 @@ TourService.init(
       type: DataTypes.DATE,
       allowNull: false,
       defaultValue: DataTypes.NOW
+    },
+    destination: {
+      type: DataTypes.STRING
+    },
+    quantity: {
+      type: DataTypes.INTEGER
+    },
+    details: {
+      type: DataTypes.STRING
+    },
+    note: {
+      type: DataTypes.TEXT
     }
   },
   { tableName: 'TourServices', timestamps: true, sequelize: sequelizeMysql }

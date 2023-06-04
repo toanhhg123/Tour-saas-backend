@@ -47,6 +47,29 @@ export async function create(
   }
 }
 
+export async function getProfile(
+  req: Request<unknown, unknown, IAccount, { typeRole: TypeRole }>,
+  res: Response,
+  next: NextFunction
+): Promise<Response<IResponseObject<unknown>> | void> {
+  try {
+    const record = await Account.findByPk(req.user?.id, { include: { model: Role, as: 'role' } })
+
+    if (!record) throw new ResponseError('not found user', 404)
+
+    record.password = ''
+    const response: IResponseObject<Account> = {
+      message: 'query success',
+      element: record,
+      status: 'ok'
+    }
+
+    return res.json(response)
+  } catch (error) {
+    next(error)
+  }
+}
+
 export async function findOne(
   req: Request<{ id: string }, unknown, IAccount>,
   res: Response,

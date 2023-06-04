@@ -15,6 +15,7 @@ declare global {
       AUTH_SECRET_KEY_ACCESS_TOKEN: string
       AUTH_SECRET_KEY_REFRESH_TOKEN: string
       AUTH_SECRET_KEY_EXPIRES: string
+      AUTH_REFRESH_KEY_EXPIRES: number
     }
   }
 }

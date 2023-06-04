@@ -1,89 +1,85 @@
-// import { Location, Tour, TourImage, TourService } from '@/models'
-// import { ResponseError } from '@/models/CustomError.model'
-// import { type ITour } from '@/models/tour.model'
-// import type IResponseObject from '@/types/ResponseObject'
-// import type { NextFunction, Request, Response } from 'express'
+import { Account } from '@/models'
+import { ResponseError } from '@/models/CustomError.model'
+import type { ITour } from '@/models/tour.model'
+import Tour from '@/models/tour.model'
+import type IResponseObject from '@/types/ResponseObject'
+import type { Request, Response, NextFunction } from 'express'
 
-// export async function getAll(
-//   req: Request<unknown, unknown, Location>,
-//   res: Response,
-//   next: NextFunction
-// ): Promise<Response<IResponseObject<unknown>> | void> {
-//   try {
-//     const tours = await Tour.findAll({
-//       include: [
-//         { model: Location, as: 'location' },
-//         { model: TourImage, as: 'tourImages' }
-//       ]
-//     })
+export async function getAll(
+  req: Request<unknown, unknown, Location>,
+  res: Response,
+  next: NextFunction
+): Promise<Response<IResponseObject<unknown>> | void> {
+  try {
+    const tours = await Tour.findAll({
+      include: [
+        { model: Account, as: 'tourMan' },
+        { model: Account, as: 'tourGuide' }
+      ]
+    })
 
-//     const response: IResponseObject<Tour[]> = {
-//       message: 'query success',
-//       element: tours,
-//       status: 'ok'
-//     }
+    const response: IResponseObject<Tour[]> = {
+      message: 'query success',
+      element: tours,
+      status: 'ok'
+    }
 
-//     return res.json(response)
-//   } catch (error) {
-//     next(error)
-//   }
-// }
+    return res.json(response)
+  } catch (error) {
+    next(error)
+  }
+}
 
-// export async function create(
-//   req: Request<unknown, unknown, ITour>,
-//   res: Response,
-//   next: NextFunction
-// ): Promise<Response<IResponseObject<unknown>> | void> {
-//   try {
-//     if (req.bodyValid?.error) throw new ResponseError('is valid body', 404, req.bodyValid.error)
+export async function create(
+  req: Request<unknown, unknown, ITour>,
+  res: Response,
+  next: NextFunction
+): Promise<Response<IResponseObject<unknown>> | void> {
+  try {
+    const { route, ...rest } = req.body
 
-//     const { transports, itineraries, accommodations, ...rest } = req.body
+    const tour = new Tour({ ...(rest as unknown as Tour), tourManId: req.user?.id ?? '' })
+    tour.setRoute(route)
 
-//     const tour = new Tour({ ...(rest as Tour) })
-//     tour.setTransports(transports)
-//     tour.setItineraries(itineraries)
-//     tour.setAccommodations(accommodations)
+    await tour.save()
+    const response: IResponseObject<Tour> = {
+      message: 'query success',
+      element: tour,
+      status: 'ok'
+    }
 
-//     await tour.save()
-//     const response: IResponseObject<Tour> = {
-//       message: 'query success',
-//       element: tour,
-//       status: 'ok'
-//     }
+    return res.json(response)
+  } catch (error) {
+    next(error)
+  }
+}
 
-//     return res.json(response)
-//   } catch (error) {
-//     next(error)
-//   }
-// }
+export async function findOne(
+  req: Request<{ id: string }, unknown, Location>,
+  res: Response,
+  next: NextFunction
+): Promise<Response<IResponseObject<unknown>> | void> {
+  try {
+    const tour = await Tour.findByPk(req.params.id, {
+      include: [
+        { model: Account, as: 'tourMan' },
+        { model: Account, as: 'tourGuide' }
+      ]
+    })
 
-// export async function findOne(
-//   req: Request<{ id: string }, unknown, Location>,
-//   res: Response,
-//   next: NextFunction
-// ): Promise<Response<IResponseObject<unknown>> | void> {
-//   try {
-//     const tour = await Tour.findByPk(req.params.id, {
-//       include: [
-//         { model: Location, as: 'location' },
-//         { model: TourImage, as: 'tourImages' },
-//         { model: TourService, as: 'tourServices' }
-//       ]
-//     })
+    if (!tour) throw new ResponseError('not found', 404)
 
-//     if (!tour) throw new ResponseError('not found', 404)
+    const response: IResponseObject<Tour> = {
+      message: 'query success',
+      element: tour,
+      status: 'ok'
+    }
 
-//     const response: IResponseObject<Tour> = {
-//       message: 'query success',
-//       element: tour,
-//       status: 'ok'
-//     }
-
-//     return res.json(response)
-//   } catch (error) {
-//     next(error)
-//   }
-// }
+    return res.json(response)
+  } catch (error) {
+    next(error)
+  }
+}
 
 // // export async function update(
 // //   req: Request<{ id: string }, unknown, Location>,

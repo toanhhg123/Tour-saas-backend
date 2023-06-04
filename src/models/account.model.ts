@@ -19,13 +19,13 @@ export interface IAccount {
   phoneNumber: string
   email: string
   address: string | null
-  companyId: string
+  companyId?: string
   roleId: string
   status: AccountStatus
 }
 
 export enum AccountStatus {
-  acctive = 'acctive',
+  acctive = 'active',
   blocked = 'blocked',
   deleted = 'deleted',
   waiting = 'watting'

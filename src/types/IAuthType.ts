@@ -1,4 +1,4 @@
-export type TypeEntity = 'Accounts' | 'Roles' | 'Companies' | 'Permissions' | 'Entities'
+export type TypeEntity = 'Accounts' | 'Roles' | 'Companies' | 'Permissions' | 'Entities' | string
 
 export type TypePermission = 'ALL' | 'EDIT' | 'READ' | 'DELETE' | 'CREATE'
 
@@ -8,6 +8,8 @@ export interface IEntity {
   Company: TypeEntity
   Permission: TypeEntity
   Entity: TypeEntity
+  Supplier: TypeEntity
+  TourPayment: TypeEntity
 }
 
 export interface IAuthRequest {

@@ -7,7 +7,10 @@ import JwtService from '@/services/jwt.service'
 import type { NextFunction, Request, Response } from 'express'
 import type { IAuthRequest, IAuthResponse } from '../types/IAuthType'
 import type IResponseObject from '../types/ResponseObject'
+import env from '@/config/env'
+import winstonLogger from '@/utils/logger.utils'
 
+let refresh = 0
 //get all role
 export async function getAllRole(
   req: Request<unknown, unknown, Role>,
@@ -143,15 +146,15 @@ export async function login(
       refreshToken: JwtService.generateRefreshToken(user.id as string)
     }
 
-    const tokenRedis = await client.set(user.id as string, userToken.refreshToken, { EX: 100 })
+    const tokenRedis = await client.set(user.id as string, userToken.refreshToken, { EX: env.AUTH_REFRESH_KEY_EXPIRES })
 
     if (!tokenRedis) throw new ResponseError('login faild not set refresh token')
 
     req.session.userToken = userToken
 
-    const response: IResponseObject<IAuthResponse> = {
+    const response: IResponseObject<string> = {
       message: 'query success',
-      element: userToken,
+      element: 'success',
       status: 'ok'
     }
 
@@ -170,8 +173,17 @@ export async function refreshToken(
     const refreshToken = req.session.userToken?.refreshToken
     if (!refreshToken) throw new ResponseError('not found refresh token')
     const { id } = JwtService.decodeRefeshToken(refreshToken)
+    console.log('<<========>>')
+    refresh++
+    console.log({ refresh })
 
-    if ((await client.get(id)) !== refreshToken) throw new ResponseError('refresh faild')
+    console.log({ refreshToken, id })
+    console.log('<<<===================>>>')
+
+    if ((await client.get(id)) !== refreshToken) {
+      await client.del(id)
+      throw new ResponseError('refresh faild')
+    }
 
     const user = await Account.findByPk(id, { include: [{ model: Role, as: 'role' }] })
 
@@ -182,7 +194,7 @@ export async function refreshToken(
       refreshToken: JwtService.generateRefreshToken(user.id as string)
     }
 
-    const tokenRedis = await client.set(user.id as string, userToken.refreshToken, { EX: 100 })
+    const tokenRedis = await client.set(user.id as string, userToken.refreshToken, { EX: env.AUTH_REFRESH_KEY_EXPIRES })
 
     if (!tokenRedis) throw new ResponseError('login faild not set refresh token')
 
@@ -191,6 +203,33 @@ export async function refreshToken(
     const response: IResponseObject<IAuthResponse> = {
       message: 'query success',
       element: userToken,
+      status: 'ok'
+    }
+
+    return res.json(response)
+  } catch (error) {
+    req.session.destroy((e) => {
+      winstonLogger.error(e)
+    })
+    next(error)
+  }
+}
+
+export async function logout(
+  req: Request<unknown, unknown, IAuthRequest>,
+  res: Response,
+  next: NextFunction
+): Promise<Response<IResponseObject<unknown>> | void> {
+  try {
+    req.session.destroy((error) => {
+      console.log(error)
+    })
+
+    res.clearCookie('SAAS_TRAVEL_', { path: '/' })
+    await client.del(req.user?.id || '')
+    const response: IResponseObject<string> = {
+      message: 'query success',
+      element: 'success',
       status: 'ok'
     }
 

@@ -4,10 +4,11 @@ import { type IPermission } from '@/models/permission.model'
 import type { IRole } from '@/models/role.model'
 import type { ITour } from '@/models/tour.model'
 import { type ITourImage } from '@/models/tourImage.model'
-import { TypeTour, type ITourService } from '@/models/tourService.model'
+import { type ITourService } from '@/models/tourService.model'
 import joi from 'joi'
 import type { IAuthRequest } from '../types/IAuthType'
-
+import { TourType } from '@/models/tour.model'
+import { TypeTour } from '@/models/tourService.model'
 export const validateTourImage = (tourImage: ITourImage) => {
   const tourImageSchema = joi.object<ITourImage>({
     tourId: joi.string().required()
@@ -20,12 +21,19 @@ export const validateTour = (tourImage: ITour) => {
   const tourImageSchema = joi.object<ITour>({
     name: joi.string().required(),
     desc: joi.string(),
-    metatitle: joi.string().required(),
-    locationId: joi.string().required(),
-    transports: joi.array<string>().required(),
-    itineraries: joi.array<string>().required(),
-    accommodations: joi.array<string>().required(),
-    price: joi.number().required()
+    metatitle: joi.string(),
+    route: joi.array<string>().required(),
+    transport: joi.string().required(),
+    departure: joi.string().required(),
+    tranportId: joi.string().required(),
+    visadate: joi.date().required(),
+    link: joi.string().required(),
+    detailLink: joi.string().required(),
+    tourManId: joi.string().required(),
+    tourGuideId: joi.string().required(),
+    type: joi.string().valid(...Object.values(TourType)),
+    price: joi.number().required(),
+    maxPax: joi.number().required()
   })
 
   return tourImageSchema.validate(tourImage)
@@ -54,7 +62,6 @@ export const validateAccount = (data: IAccount) => {
       .required(),
     email: joi.string().email().required(),
     address: joi.string().required(),
-    roleId: joi.string().required(),
     status: joi.string().valid(...Object.values(AccountStatus))
   })
 

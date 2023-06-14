@@ -1,7 +1,12 @@
 import winstonLogger from '@/utils/logger.utils'
 import { createClient } from 'redis'
+import env from '../env'
 
-export const client = createClient()
+const url = `redis://${env.REDIS_HOST}:${env.REDIS_PORT}`
+export const client = createClient({
+  url,
+  password: '30122002'
+})
 
 export default async function ConnectRedis() {
   try {

@@ -6,14 +6,10 @@ import type Tour from './tour.model'
 
 class AirBooking extends Model<InferAttributes<AirBooking>, InferCreationAttributes<AirBooking>> {
   declare id: CreationOptional<string>
-
   declare code: string
-
   declare route: string
   declare depDay: Date
-
   declare depTime: Date
-
   declare retDate: Date
 
   declare retTime: Date

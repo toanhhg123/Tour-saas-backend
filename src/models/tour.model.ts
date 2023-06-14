@@ -10,6 +10,8 @@ import type {
 import { DataTypes, Model } from 'sequelize'
 import type Account from './account.model'
 import type TourImage from './tourImage.model'
+import type AirBooking from './airBooking.model'
+import TourService from './tourService.model'
 
 export enum TourType {
   OPEN = 'open',
@@ -76,13 +78,16 @@ class Tour extends Model<InferAttributes<Tour>, InferCreationAttributes<Tour>> {
   }
 
   declare getTourImages: HasManyGetAssociationsMixin<TourImage>
-
+  declare getAirBookings: HasManyGetAssociationsMixin<AirBooking>
   declare toursImages?: NonAttribute<TourImage[]>
+  declare tourServices?: NonAttribute<TourService[]>
 
   declare static associations: {
     tourImages: Association<Tour, TourImage>
     tourMan: Association<Tour, Account>
     tourGuide: Association<Tour, Account>
+    airBookings: Association<Tour, AirBooking>
+    tourServices: Association<Tour, TourService>
   }
 }
 

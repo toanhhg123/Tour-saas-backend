@@ -3,12 +3,22 @@ import { entites } from '@/types/consts'
 import type { CreationOptional, InferAttributes, InferCreationAttributes } from 'sequelize'
 import { DataTypes, Model } from 'sequelize'
 
+export interface ISupplier {
+  id: string
+  name: string
+  address: string
+  phone: string
+  isDeleted: boolean
+  email: string
+}
+
 class Supplier extends Model<InferAttributes<Supplier>, InferCreationAttributes<Supplier>> {
   declare id: CreationOptional<string>
   declare name: string
   declare address: string
   declare email: string
   declare phone: string
+  declare isDeleted: boolean
 
   public createdAt!: CreationOptional<Date>
   public updatedAt!: CreationOptional<Date>
@@ -23,6 +33,10 @@ Supplier.init(
     },
     name: {
       type: DataTypes.STRING
+    },
+    isDeleted: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false
     },
     phone: {
       type: DataTypes.STRING

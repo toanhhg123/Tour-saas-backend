@@ -25,13 +25,16 @@ Role.hasMany(Account, { foreignKey: 'roleId', as: 'accounts' })
 
 Tour.belongsTo(Account, { as: 'tourMan', foreignKey: 'tourManId' })
 Tour.belongsTo(Account, { as: 'tourGuide', foreignKey: 'tourGuideId' })
+Tour.hasMany(TourService, { as: 'tourServices', foreignKey: 'tourId' })
 
+// tourservice
 TourService.belongsTo(Supplier, {
   as: 'supplier',
   foreignKey: 'supplierId'
 })
 TourService.belongsTo(Tour, { as: 'tour', foreignKey: 'tourId' })
 
+//tourPayment
 TourPayment.belongsTo(TourService, { as: 'tourService', foreignKey: 'serviceId' })
 
 Booking.belongsTo(Tour, { as: 'tour', foreignKey: 'tourId' })
@@ -42,6 +45,7 @@ BookingPayment.belongsTo(Booking, { as: 'booking', foreignKey: 'bookingId' })
 
 AirBooking.belongsTo(Tour, { as: 'tour', foreignKey: 'tourId' })
 AirBooking.belongsTo(Supplier, { as: 'supplier', foreignKey: 'supplierId' })
+Tour.hasMany(AirBooking, { as: 'airBookings', foreignKey: 'tourId' })
 
 AirBookingPayment.belongsTo(AirBooking, { as: 'airBooking', foreignKey: 'airBookingId' })
 
@@ -142,4 +146,4 @@ AirBookingPayment.belongsTo(AirBooking, { as: 'airBooking', foreignKey: 'airBook
 //   .catch((error) => {
 //     console.error('Error synchronizing tables:', error)
 //   })
-export { Account, Role, Permissions, Entity, Company }
+export { Account, Role, Permissions, Entity, Company, Supplier, TourService }

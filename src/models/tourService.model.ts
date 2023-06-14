@@ -16,6 +16,11 @@ export interface ITourService {
   desc: string
   tourId: string
   type: TypeTour
+  destination: string
+  quantity: number
+  supplierId: string
+  details: string
+  note: string
   createdAt: Date
   updatedAt: Date
 }
@@ -27,7 +32,7 @@ class TourService extends Model<InferAttributes<TourService>, InferCreationAttri
   declare desc: string
   declare type: TypeTour
   declare destination: string
-  declare quantity: string
+  declare quantity: number
   declare details: string
   declare note: string
 

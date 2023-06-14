@@ -1,4 +1,4 @@
-import { create, findOne, getAll, getProfile } from '@/controllers/account.controller'
+import { create, findOne, findeByIdAndEmail, getAll, getProfile } from '@/controllers/account.controller'
 import { validateAccount } from '@/utils/validations'
 import type { NextFunction, Request, Response } from 'express'
 import { Router } from 'express'
@@ -13,6 +13,7 @@ const mapTypeRole = (typeRole: TypeRole) => (req: Request, _res: Response, next:
 }
 
 router.get('/profile', authorize(), getProfile)
+router.get('/findOne', authorize(), findeByIdAndEmail)
 router.get('/:id', findOne)
 router.get('/', authorize(['Sys.Admin']), getAll)
 

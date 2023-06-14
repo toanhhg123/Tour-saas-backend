@@ -9,6 +9,7 @@ import joi from 'joi'
 import type { IAuthRequest } from '../types/IAuthType'
 import { TourType } from '@/models/tour.model'
 import { TypeTour } from '@/models/tourService.model'
+import type { ISupplier } from '@/models/supplier.model'
 export const validateTourImage = (tourImage: ITourImage) => {
   const tourImageSchema = joi.object<ITourImage>({
     tourId: joi.string().required()
@@ -41,11 +42,17 @@ export const validateTour = (tourImage: ITour) => {
 
 export const validateTourService = (tourImage: ITourService) => {
   const tourImageSchema = joi.object<ITourService>({
+    id: joi.string().allow(''),
     name: joi.string().required(),
+    supplierId: joi.string().required(),
     price: joi.number().required(),
     desc: joi.string().required(),
     tourId: joi.string().required(),
-    type: joi.string().valid(...Object.values(TypeTour))
+    type: joi.string().valid(...Object.values(TypeTour)),
+    destination: joi.string().required(),
+    quantity: joi.number().required(),
+    details: joi.string().required(),
+    note: joi.string().required()
   })
 
   return tourImageSchema.validate(tourImage)
@@ -90,6 +97,21 @@ export const validateAuthRequest = (data: IAuthRequest) => {
   const schema = joi.object<IAuthRequest>({
     email: joi.string().email().required(),
     password: joi.string().min(4).required()
+  })
+
+  return schema.validate(data)
+}
+
+export const validateSupplier = (data: ISupplier) => {
+  const schema = joi.object<ISupplier>({
+    email: joi.string().email().required(),
+    phone: joi
+      .string()
+      .regex(/^[0-9]{10}$/)
+      .messages({ 'string.pattern.base': `Phone number must have 10 digits.` })
+      .required(),
+    name: joi.string().required(),
+    address: joi.string().required()
   })
 
   return schema.validate(data)

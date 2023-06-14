@@ -5,6 +5,7 @@ import type { NextFunction, Request, Response } from 'express'
 import { ResponseError } from '../models/CustomError.model'
 import type { IAccount } from '../models/account.model'
 import { AccountStatus } from '../models/account.model'
+import { Op } from 'sequelize'
 
 export async function getAll(
   req: Request<unknown, unknown, Account>,
@@ -38,6 +39,32 @@ export async function create(
     const response: IResponseObject<Account> = {
       message: 'query success',
       element: record,
+      status: 'ok'
+    }
+
+    return res.json(response)
+  } catch (error) {
+    next(error)
+  }
+}
+
+export async function findeByIdAndEmail(
+  req: Request<unknown, unknown, IAccount, { id?: string; email?: string }>,
+  res: Response,
+  next: NextFunction
+): Promise<Response<IResponseObject<unknown>> | void> {
+  try {
+    const { id, email } = req.query
+    const account = await Account.findOne({
+      where: {
+        [Op.or]: [{ email }, { id }]
+      }
+    })
+    if (!account) throw new ResponseError('not found account', 404)
+
+    const response: IResponseObject<Account> = {
+      message: 'query success',
+      element: account,
       status: 'ok'
     }
 

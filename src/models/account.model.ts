@@ -32,14 +32,17 @@ export enum AccountStatus {
 }
 
 class Account extends Model<InferAttributes<Account>, InferCreationAttributes<Account>> {
-  declare id: CreateOptions<string>
+  declare id: CreationOptional<string>
   declare fullName: string
   declare password: string
   declare phoneNumber: string
   declare email: string
   declare address: string | null
   declare status: AccountStatus
+  declare passport?: string
+  declare passportExp?: Date
   public companyId!: ForeignKey<Company['id']>
+  public supplierId!: ForeignKey<Company['id']>
   public roleId!: ForeignKey<Role['id']>
 
   public readonly role?: Role
@@ -72,6 +75,11 @@ Account.init(
       type: DataTypes.UUID,
       defaultValue: DataTypes.UUIDV4
     },
+    supplierId: {
+      type: DataTypes.UUID,
+      allowNull: true,
+      defaultValue: null
+    },
     status: {
       type: DataTypes.ENUM(...Object.values(AccountStatus)),
       defaultValue: AccountStatus.waiting
@@ -93,6 +101,16 @@ Account.init(
     address: {
       type: DataTypes.STRING,
       allowNull: true
+    },
+    passport: {
+      type: DataTypes.STRING,
+      allowNull: true,
+      defaultValue: null
+    },
+    passportExp: {
+      type: DataTypes.DATE,
+      allowNull: true,
+      defaultValue: null
     },
     createdAt: {
       type: DataTypes.DATE,
@@ -117,5 +135,4 @@ Account.init(
     }
   }
 )
-
 export default Account

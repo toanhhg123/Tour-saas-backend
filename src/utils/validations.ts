@@ -10,6 +10,7 @@ import type { IAuthRequest } from '../types/IAuthType'
 import { TourType } from '@/models/tour.model'
 import { TypeTour } from '@/models/tourService.model'
 import type { ISupplier } from '@/models/supplier.model'
+import { IBooking, StatusBooking } from '@/models/booking.model'
 export const validateTourImage = (tourImage: ITourImage) => {
   const tourImageSchema = joi.object<ITourImage>({
     tourId: joi.string().required()
@@ -58,6 +59,21 @@ export const validateTourService = (tourImage: ITourService) => {
   return tourImageSchema.validate(tourImage)
 }
 
+export const validateBooking = (data: IBooking) => {
+  const dataSchema = joi.object<IBooking>({
+    id: joi.string().allow(''),
+    bookDate: joi.date().required(),
+    comfirmDate: joi.date().required(),
+    price: joi.number().required(),
+    status: joi.string().valid(...Object.values(StatusBooking)),
+    com: joi.number().required(),
+    clientId: joi.string().required(),
+    saleId: joi.string().required(),
+    tourId: joi.string().required()
+  })
+
+  return dataSchema.validate(data)
+}
 export const validateAccount = (data: IAccount) => {
   const dataSchema = joi.object<IAccount>({
     fullName: joi.string().required(),

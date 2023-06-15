@@ -9,8 +9,8 @@ const router = Router()
 router.post('/', validateBody<ITourService>(validateTourService), create)
 
 router.get('/:id', findOne)
-router.patch('/:id', update)
+router.patch('/:id', validateBody<ITourService>(validateTourService), update)
 
-router.delete('/:id/:idImageGoogle', remove)
+router.delete('/:id', remove)
 
 export default router

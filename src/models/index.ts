@@ -146,4 +146,4 @@ AirBookingPayment.belongsTo(AirBooking, { as: 'airBooking', foreignKey: 'airBook
 //   .catch((error) => {
 //     console.error('Error synchronizing tables:', error)
 //   })
-export { Account, Role, Permissions, Entity, Company, Supplier, TourService }
+export { Account, Role, Permissions, Entity, Company, Supplier, TourService, Booking }

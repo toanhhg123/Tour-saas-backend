@@ -10,20 +10,30 @@ export enum StatusBooking {
   paid = 'paid'
 }
 
+export interface IBooking {
+  id: string
+  bookDate: Date
+  comfirmDate: Date
+  price: number
+  status: StatusBooking
+  com: number
+  clientId: string
+  saleId: string
+  tourId: string
+  createdAt: Date
+  updatedAt: Date
+}
+
 class Booking extends Model<InferAttributes<Booking>, InferCreationAttributes<Booking>> {
   declare id: CreationOptional<string>
   declare bookDate: Date
   declare comfirmDate: Date
   declare price: number
-
   declare status: StatusBooking
-
   declare com: number
-
   public clientId!: ForeignKey<Account['id']>
   public saleId!: ForeignKey<Account['id']>
   public tourId!: ForeignKey<Tour['id']>
-
   public createdAt!: CreationOptional<Date>
   public updatedAt!: CreationOptional<Date>
 }

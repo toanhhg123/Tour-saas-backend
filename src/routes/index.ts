@@ -5,16 +5,15 @@ import { type Express } from 'express'
 import tourRoute from '@/routes/tour.route'
 import supplierRoute from '@/routes/supplier.route'
 import tourServiceRoute from '@/routes/tourService.route'
+import bookingRoute from '@/routes/booking.route'
 
 const useRoutes = async (app: Express): Promise<void> => {
   app.use('/api/v1/account', accountRoute)
-
   app.use('/api/v1/auth', authRoute)
   app.use('/api/v1/tour', tourRoute)
   app.use('/api/v1/supplier', supplierRoute)
-  // app.use('/api/v1/tourImage', tourImageRoute)
   app.use('/api/v1/tourService', tourServiceRoute)
-
+  app.use('/api/v1/booking', bookingRoute)
   app.use(notFound)
   app.use(handleError)
 }

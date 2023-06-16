@@ -8,7 +8,7 @@ import { Router } from 'express'
 const router = Router()
 
 router.post('/', validateBody<IBooking>(validateBooking), authorize(['Sys.Admin']), create)
-router.get('/:tourId', authorize(['Sys.Admin']), getByTourId)
+router.get('/tour/:tourId', authorize(['Sys.Admin']), getByTourId)
 router.patch('/:id', validateBody<IBooking>(validateBooking), authorize(['Sys.Admin']), update)
 router.delete('/:id', authorize(['Sys.Admin']), remove)
 

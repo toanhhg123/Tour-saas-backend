@@ -3,6 +3,7 @@ import { Account, Booking } from '@/models'
 import type IResponseObject from '@/types/ResponseObject'
 import type { NextFunction, Request, Response } from 'express'
 import { IBooking } from '@/models/booking.model'
+import Tour from '@/models/tour.model'
 
 export async function create(
   req: Request<unknown, unknown, IBooking>,
@@ -10,11 +11,18 @@ export async function create(
   next: NextFunction
 ): Promise<Response<IResponseObject<unknown>> | void> {
   try {
-    const record = await Booking.create({ ...req.body })
-
+    let record = await Booking.create({ ...req.body })
+    const recordRes = await Booking.findByPk(record.id, {
+      include: [
+        { model: Tour, as: 'tour' },
+        { model: Account, as: 'client' },
+        { model: Account, as: 'sale' }
+      ]
+    })
+    if (!recordRes) throw new ResponseError('Not found booking')
     const response: IResponseObject<Booking> = {
       message: 'query success',
-      element: record,
+      element: recordRes,
       status: 'ok'
     }
 
@@ -30,7 +38,14 @@ export async function getByTourId(
   next: NextFunction
 ): Promise<Response<IResponseObject<unknown>> | void> {
   try {
-    const record = await Booking.findAll({ where: { tourId: req.params.tourId } })
+    const record = await Booking.findAll({
+      where: { tourId: req.params.tourId },
+      include: [
+        { model: Tour, as: 'tour' },
+        { model: Account, as: 'client' },
+        { model: Account, as: 'sale' }
+      ]
+    })
 
     const response: IResponseObject<Booking[]> = {
       message: 'query success',

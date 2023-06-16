@@ -1,7 +1,7 @@
 import { Account, Role, Supplier, TourService } from '@/models'
 import { ResponseError } from '@/models/CustomError.model'
 import AirBooking from '@/models/airBooking.model'
-import type { ITour } from '@/models/tour.model'
+import { ITour, STRING_CONCAT } from '@/models/tour.model'
 import Tour from '@/models/tour.model'
 import type IResponseObject from '@/types/ResponseObject'
 import type { Request, Response, NextFunction } from 'express'
@@ -114,27 +114,33 @@ export async function findOne(
   }
 }
 
-// // export async function update(
-// //   req: Request<{ id: string }, unknown, Location>,
-// //   res: Response,
-// //   next: NextFunction
-// // ): Promise<Response<IResponseObject<unknown>> | void | void> {
-// //   try {
-// //     const [location] = await Location.update(req.body, { where: { id: req.params.id } })
+export async function update(
+  req: Request<{ id: string }, unknown, ITour>,
+  res: Response,
+  next: NextFunction
+): Promise<Response<IResponseObject<unknown>> | void> {
+  try {
+    const [tour] = await Tour.update(
+      {
+        ...req.body,
+        route: req.body.route.join(STRING_CONCAT)
+      },
+      { where: { id: req.params.id } }
+    )
 
-// //     if (!location) throw new ResponseError('not found location', 404)
+    if (!tour) throw new ResponseError('not found location', 404)
 
-// //     const response: IResponseObject<number> = {
-// //       message: 'query success',
-// //       element: location,
-// //       status: 'ok'
-// //     }
+    const response: IResponseObject<number> = {
+      message: 'query success',
+      element: tour,
+      status: 'ok'
+    }
 
-// //     return res.json(response)
-// //   } catch (error) {
-// //     next(error)
-// //   }
-// // }
+    return res.json(response)
+  } catch (error) {
+    next(error)
+  }
+}
 
 // // export async function remove(
 // //   req: Request<{ id: string }, unknown, Location>,

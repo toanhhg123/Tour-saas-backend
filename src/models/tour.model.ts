@@ -38,7 +38,7 @@ export interface ITour {
   tourGuideId: string
 }
 
-const STRING_CONCAT = '<<--->>'
+export const STRING_CONCAT = '<<--->>'
 class Tour extends Model<InferAttributes<Tour>, InferCreationAttributes<Tour>> {
   declare id: CreationOptional<string>
   declare name: string

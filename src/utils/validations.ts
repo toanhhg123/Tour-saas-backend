@@ -11,12 +11,25 @@ import { TourType } from '@/models/tour.model'
 import { TypeTour } from '@/models/tourService.model'
 import type { ISupplier } from '@/models/supplier.model'
 import { IBooking, StatusBooking } from '@/models/booking.model'
+import { ICompany } from '@/models/company.model'
+
 export const validateTourImage = (tourImage: ITourImage) => {
   const tourImageSchema = joi.object<ITourImage>({
     tourId: joi.string().required()
   })
 
   return tourImageSchema.validate(tourImage)
+}
+
+export const validateCompany = (data: ICompany) => {
+  const dataValidate = joi.object<ICompany>({
+    name: joi.string().required(),
+    address: joi.string(),
+    email: joi.string().email().required(),
+    phone: joi.string().required()
+  })
+
+  return dataValidate.validate(data)
 }
 
 export const validateTour = (tourImage: ITour) => {
@@ -26,6 +39,7 @@ export const validateTour = (tourImage: ITour) => {
     metatitle: joi.string(),
     route: joi.array<string>().required(),
     transport: joi.string().required(),
+    companyId: joi.string().required(),
     departure: joi.string().required(),
     tranportId: joi.string().required(),
     visadate: joi.date().required(),
@@ -67,6 +81,7 @@ export const validateBooking = (data: IBooking) => {
     price: joi.number().required(),
     status: joi.string().valid(...Object.values(StatusBooking)),
     com: joi.number().required(),
+    paxNum: joi.number().required(),
     clientId: joi.string().required(),
     saleId: joi.string().required(),
     tourId: joi.string().required()
@@ -85,7 +100,25 @@ export const validateAccount = (data: IAccount) => {
       .required(),
     email: joi.string().email().required(),
     address: joi.string().required(),
-    status: joi.string().valid(...Object.values(AccountStatus))
+    status: joi.string().valid(...Object.values(AccountStatus)),
+    companyId: joi.string().allow(null),
+    passport: joi.string().optional(),
+    passportExp: joi.date().optional(),
+    roleId: joi
+      .string()
+      .valid(
+        'Oper.Admin',
+        'Sys.Admin',
+        'Oper.Manager',
+        'Oper.TourMan',
+        'Oper.Sales',
+        'Oper.Visa',
+        'Oper.Acct',
+        'Oper.Guide',
+        'Agent.Sales',
+        'Agent.Admin',
+        'Client'
+      )
   })
 
   return dataSchema.validate(data)
@@ -101,7 +134,11 @@ export const validateRole = (data: IRole) => {
 
 export const validatePermission = (data: IPermission) => {
   const schema = joi.object<IPermission>({
-    perms: joi.array().min(1).items(joi.string().valid('ALL', 'EDIT', 'READ', 'DELETE', 'CREATE')).required(),
+    perms: joi
+      .array()
+      .min(1)
+      .items(joi.string().valid('ALL', 'EDIT', 'READ', 'DELETE', 'CREATE'))
+      .required(),
     roleId: joi.string().required(),
     entityId: joi.number().required()
   })

@@ -31,6 +31,34 @@ export async function getAll(
   }
 }
 
+export async function getByCompanyId(
+  req: Request<{ companyId: string }, unknown, Location>,
+  res: Response,
+  next: NextFunction
+): Promise<Response<IResponseObject<unknown>> | void> {
+  try {
+    const tours = await Tour.findAll({
+      where: {
+        companyId: req.params.companyId
+      },
+      include: [
+        { model: Account, as: 'tourMan' },
+        { model: Account, as: 'tourGuide' }
+      ]
+    })
+
+    const response: IResponseObject<Tour[]> = {
+      message: 'query success',
+      element: tours,
+      status: 'ok'
+    }
+
+    return res.json(response)
+  } catch (error) {
+    next(error)
+  }
+}
+
 export async function getTourByManager(
   req: Request<unknown, unknown, Location>,
   res: Response,
@@ -69,7 +97,10 @@ export async function create(
   try {
     const { route, ...rest } = req.body
 
-    const tour = new Tour({ ...(rest as unknown as Tour), tourManId: req.user?.id ?? '' })
+    const tour = new Tour({
+      ...(rest as unknown as Tour),
+      tourManId: req.user?.id ?? ''
+    })
     tour.setRoute(route)
 
     await tour.save()
@@ -93,10 +124,22 @@ export async function findOne(
   try {
     const tour = await Tour.findByPk(req.params.id, {
       include: [
-        { model: Account, as: 'tourMan', include: [{ model: Role, as: 'role' }] },
-        { model: Account, as: 'tourGuide', include: [{ model: Role, as: 'role' }] },
+        {
+          model: Account,
+          as: 'tourMan',
+          include: [{ model: Role, as: 'role' }]
+        },
+        {
+          model: Account,
+          as: 'tourGuide',
+          include: [{ model: Role, as: 'role' }]
+        },
         { model: AirBooking, as: 'airBookings' },
-        { model: TourService, as: 'tourServices', include: [{ model: Supplier, as: 'supplier' }] }
+        {
+          model: TourService,
+          as: 'tourServices',
+          include: [{ model: Supplier, as: 'supplier' }]
+        }
       ]
     })
 

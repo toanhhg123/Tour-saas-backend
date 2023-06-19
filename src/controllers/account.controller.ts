@@ -8,12 +8,77 @@ import { AccountStatus } from '../models/account.model'
 import { Op } from 'sequelize'
 
 export async function getAll(
-  req: Request<unknown, unknown, Account>,
+  _req: Request<unknown, unknown, Account>,
   res: Response,
   next: NextFunction
 ): Promise<Response<IResponseObject<unknown>> | void> {
   try {
-    const accounts = await Account.findAll({ include: [{ model: Role, as: 'role' }] })
+    const accounts = await Account.findAll({
+      include: [{ model: Role, as: 'role' }]
+    })
+    const response: IResponseObject<Account[]> = {
+      message: 'query success',
+      element: accounts,
+      status: 'ok'
+    }
+
+    return res.json(response)
+  } catch (error) {
+    next(error)
+  }
+}
+
+export async function getAccountsByRoles(
+  _req: Request<unknown, unknown, unknown, { typeRole: TypeRole }>,
+  res: Response,
+  next: NextFunction
+): Promise<Response<IResponseObject<unknown>> | void> {
+  try {
+    const accounts = await Account.findAll({ attributes: ['id', 'email'] })
+    const response: IResponseObject<Account[]> = {
+      message: 'query success',
+      element: accounts,
+      status: 'ok'
+    }
+
+    return res.json(response)
+  } catch (error) {
+    next(error)
+  }
+}
+
+export async function getByCompanyId(
+  req: Request<{ companyId: string }, unknown, Account>,
+  res: Response,
+  next: NextFunction
+): Promise<Response<IResponseObject<unknown>> | void> {
+  try {
+    const accounts = await Account.findAll({
+      where: { companyId: req.params.companyId },
+      include: [{ model: Role, as: 'role' }]
+    })
+    const response: IResponseObject<Account[]> = {
+      message: 'query success',
+      element: accounts,
+      status: 'ok'
+    }
+
+    return res.json(response)
+  } catch (error) {
+    next(error)
+  }
+}
+
+export async function searchEmail(
+  req: Request<unknown, unknown, Account, { email: string }>,
+  res: Response,
+  next: NextFunction
+): Promise<Response<IResponseObject<unknown>> | void> {
+  try {
+    const accounts = await Account.findAll({
+      where: { email: req.query.email },
+      attributes: ['id', 'email']
+    })
     const response: IResponseObject<Account[]> = {
       message: 'query success',
       element: accounts,
@@ -33,9 +98,19 @@ export async function create(
 ): Promise<Response<IResponseObject<unknown>> | void> {
   try {
     const role = await Role.findOne({ where: { name: req.query.typeRole } })
-    if (!role) throw new ResponseError('not found role', 404)
+    if (!role) throw new ResponseError('not found role')
 
-    const record = await Account.create({ ...(req.body as Account), roleId: role.id })
+    const record = await Account.create(
+      {
+        ...(req.body as Account),
+        roleId: role.id,
+        operatorId: req.user?.id
+      },
+      {
+        include: [{ model: Role, as: 'role' }]
+      }
+    )
+
     const response: IResponseObject<Account> = {
       message: 'query success',
       element: record,
@@ -80,7 +155,9 @@ export async function getProfile(
   next: NextFunction
 ): Promise<Response<IResponseObject<unknown>> | void> {
   try {
-    const record = await Account.findByPk(req.user?.id, { include: { model: Role, as: 'role' } })
+    const record = await Account.findByPk(req.user?.id, {
+      include: { model: Role, as: 'role' }
+    })
 
     if (!record) throw new ResponseError('not found user', 404)
 
@@ -103,8 +180,9 @@ export async function findOne(
   next: NextFunction
 ): Promise<Response<IResponseObject<unknown>> | void> {
   try {
-    const record = await Account.findByPk(req.params.id)
-
+    const record = await Account.findByPk(req.params.id, {
+      include: [{ model: Role, as: 'role' }]
+    })
     if (!record) throw new ResponseError('not found user', 404)
 
     const response: IResponseObject<Account> = {
@@ -166,12 +244,20 @@ export async function remove(
 }
 
 export async function update(
-  req: Request<{ id: string }, unknown, IAccount>,
+  req: Request<{ id: string }, unknown, IAccount, { typeRole: TypeRole }>,
   res: Response,
   next: NextFunction
 ): Promise<Response<IResponseObject<unknown>> | void> {
   try {
-    const [record] = await Account.update(req.body, { where: { id: req.params.id } })
+    const role = await Role.findOne({ where: { name: req.query.typeRole } })
+    if (!role) throw new ResponseError('not found role')
+
+    const [record] = await Account.update(
+      { ...req.body, roleId: role.id },
+      {
+        where: { id: req.params.id }
+      }
+    )
 
     if (!record) throw new ResponseError('not found user', 404)
 

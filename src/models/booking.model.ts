@@ -17,6 +17,7 @@ export interface IBooking {
   price: number
   status: StatusBooking
   com: number
+  paxNum: number
   clientId: string
   saleId: string
   tourId: string
@@ -31,6 +32,7 @@ class Booking extends Model<InferAttributes<Booking>, InferCreationAttributes<Bo
   declare price: number
   declare status: StatusBooking
   declare com: number
+  declare paxNum: number
   public clientId!: ForeignKey<Account['id']>
   public saleId!: ForeignKey<Account['id']>
   public tourId!: ForeignKey<Tour['id']>
@@ -44,6 +46,10 @@ Booking.init(
       type: DataTypes.UUID,
       primaryKey: true,
       defaultValue: DataTypes.UUIDV4
+    },
+    paxNum: {
+      type: DataTypes.INTEGER,
+      defaultValue: 1
     },
     clientId: {
       type: DataTypes.UUID,

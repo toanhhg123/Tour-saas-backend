@@ -4,7 +4,6 @@ import { entites } from '@/types/consts'
 import * as bcrypt from 'bcrypt'
 import type {
   BelongsTo,
-  CreateOptions,
   CreationOptional,
   ForeignKey,
   InferAttributes,
@@ -22,6 +21,8 @@ export interface IAccount {
   companyId?: string
   roleId: string
   status: AccountStatus
+  passport?: string
+  passportExp?: Date
 }
 
 export enum AccountStatus {
@@ -31,7 +32,10 @@ export enum AccountStatus {
   waiting = 'watting'
 }
 
-class Account extends Model<InferAttributes<Account>, InferCreationAttributes<Account>> {
+class Account extends Model<
+  InferAttributes<Account>,
+  InferCreationAttributes<Account>
+> {
   declare id: CreationOptional<string>
   declare fullName: string
   declare password: string
@@ -41,14 +45,18 @@ class Account extends Model<InferAttributes<Account>, InferCreationAttributes<Ac
   declare status: AccountStatus
   declare passport?: string
   declare passportExp?: Date
+
   public companyId!: ForeignKey<Company['id']>
+  public operatorId!: ForeignKey<Account['id']>
   public supplierId!: ForeignKey<Company['id']>
   public roleId!: ForeignKey<Role['id']>
-
   public readonly role?: Role
   public readonly company?: Company
 
-  public static async validPassword(account: Account, password: string): Promise<boolean> {
+  public static async validPassword(
+    account: Account,
+    password: string
+  ): Promise<boolean> {
     return await bcrypt.compare(password, account.password)
   }
 
@@ -67,6 +75,11 @@ Account.init(
       defaultValue: DataTypes.UUIDV4
     },
     companyId: {
+      type: DataTypes.UUID,
+      allowNull: true,
+      defaultValue: null
+    },
+    operatorId: {
       type: DataTypes.UUID,
       allowNull: true,
       defaultValue: null

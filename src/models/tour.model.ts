@@ -2,6 +2,7 @@ import { sequelize as sequelizeMysql } from '@/config/db/mysql.db'
 import type {
   Association,
   CreationOptional,
+  ForeignKey,
   HasManyGetAssociationsMixin,
   InferAttributes,
   InferCreationAttributes,
@@ -12,6 +13,7 @@ import type Account from './account.model'
 import type TourImage from './tourImage.model'
 import type AirBooking from './airBooking.model'
 import TourService from './tourService.model'
+import Company from './company.model'
 
 export enum TourType {
   OPEN = 'open',
@@ -30,6 +32,7 @@ export interface ITour {
   tranportId: string
   visadate: Date
   link: string
+  companyId: string
   type: TourType
   detailLink: string
   price: number
@@ -67,6 +70,8 @@ class Tour extends Model<InferAttributes<Tour>, InferCreationAttributes<Tour>> {
   declare maxPax: number
 
   declare tourManId: string
+
+  public companyId!: ForeignKey<Company['id']>
 
   declare tourGuideId: string
 
@@ -111,6 +116,11 @@ Tour.init(
       get() {
         return this.getDataValue('route').split(STRING_CONCAT)
       }
+    },
+    companyId: {
+      type: DataTypes.UUID,
+      allowNull: true,
+      defaultValue: null
     },
     departure: {
       type: DataTypes.STRING

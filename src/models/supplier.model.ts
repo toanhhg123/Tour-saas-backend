@@ -1,7 +1,8 @@
 import { sequelize as sequelizeMysql } from '@/config/db/mysql.db'
 import { entites } from '@/types/consts'
-import type { CreationOptional, InferAttributes, InferCreationAttributes } from 'sequelize'
+import type { CreationOptional, ForeignKey, InferAttributes, InferCreationAttributes } from 'sequelize'
 import { DataTypes, Model } from 'sequelize'
+import Account from './account.model'
 
 export interface ISupplier {
   id: string
@@ -20,6 +21,7 @@ class Supplier extends Model<InferAttributes<Supplier>, InferCreationAttributes<
   declare phone: string
   declare isDeleted: boolean
 
+  public operatorId!: ForeignKey<Account['id']>
   public createdAt!: CreationOptional<Date>
   public updatedAt!: CreationOptional<Date>
 }
@@ -30,6 +32,11 @@ Supplier.init(
       type: DataTypes.UUID,
       primaryKey: true,
       defaultValue: DataTypes.UUIDV4
+    },
+    operatorId: {
+      type: DataTypes.UUID,
+      allowNull: true,
+      defaultValue: true
     },
     name: {
       type: DataTypes.STRING

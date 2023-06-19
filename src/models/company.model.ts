@@ -1,15 +1,36 @@
 import { sequelize as sequelizeMysql } from '@/config/db/mysql.db'
 import { entites } from '@/types/consts'
-import type { CreationOptional, InferAttributes, InferCreationAttributes } from 'sequelize'
+import type {
+  CreationOptional,
+  ForeignKey,
+  InferAttributes,
+  InferCreationAttributes
+} from 'sequelize'
 import { DataTypes, Model } from 'sequelize'
+import Account from './account.model'
 
-class Company extends Model<InferAttributes<Company>, InferCreationAttributes<Company>> {
+export interface ICompany {
+  id: string
+  name: string
+  address: string
+  email: string
+  phone: string
+  operatorId: string
+  createdAt: Date
+  updatedAt: Date
+}
+
+class Company extends Model<
+  InferAttributes<Company>,
+  InferCreationAttributes<Company>
+> {
   declare id: CreationOptional<string>
   declare name: string
   declare address: string
   declare email: string
   declare phone: string
 
+  public operatorId!: ForeignKey<Account['id']>
   public createdAt!: CreationOptional<Date>
   public updatedAt!: CreationOptional<Date>
 }
@@ -20,6 +41,11 @@ Company.init(
       type: DataTypes.UUID,
       primaryKey: true,
       defaultValue: DataTypes.UUIDV4
+    },
+    operatorId: {
+      type: DataTypes.UUID,
+      allowNull: true,
+      defaultValue: null
     },
     name: {
       type: DataTypes.STRING

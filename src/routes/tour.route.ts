@@ -1,4 +1,10 @@
-import { create, findOne, getAll, update, getTourByManager } from '@/controllers/tour.controller'
+import {
+  create,
+  findOne,
+  getAll,
+  update,
+  getTourByManager
+} from '@/controllers/tour.controller'
 import { authorize } from '@/middlewares/auth.middeware'
 import { validateBody } from '@/middlewares/validate.middleware'
 import type { ITour } from '@/models/tour.model'
@@ -9,7 +15,12 @@ const router = Router()
 router.get('/:id', findOne)
 router.get('/', getAll)
 router.get('/withTourMan', getTourByManager)
-router.post('/', authorize(['Sys.Admin', 'Oper.Mamnager']), validateBody<ITour>(validateTour), create)
+router.post(
+  '/',
+  authorize(['Sys.Admin', 'Oper.Mamnager']),
+  validateBody<ITour>(validateTour),
+  create
+)
 router.patch('/:id', validateBody<ITour>(validateTour), update)
 
 // router.delete('/:id', remove)

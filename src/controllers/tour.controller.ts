@@ -1,10 +1,19 @@
-import { Account, Role, Supplier, TourService } from '@/models'
+import {
+  Account,
+  Role,
+  Supplier,
+  TourService
+} from '@/models'
 import { ResponseError } from '@/models/CustomError.model'
 import AirBooking from '@/models/airBooking.model'
 import { ITour, STRING_CONCAT } from '@/models/tour.model'
 import Tour from '@/models/tour.model'
 import type IResponseObject from '@/types/ResponseObject'
-import type { Request, Response, NextFunction } from 'express'
+import type {
+  Request,
+  Response,
+  NextFunction
+} from 'express'
 
 export async function getAll(
   req: Request<unknown, unknown, Location>,
@@ -30,7 +39,7 @@ export async function getAll(
     next(error)
   }
 }
-
+asdasdas
 export async function getByCompanyId(
   req: Request<{ companyId: string }, unknown, Location>,
   res: Response,
@@ -134,12 +143,12 @@ export async function findOne(
           as: 'tourGuide',
           include: [{ model: Role, as: 'role' }]
         },
-        { model: AirBooking, as: 'airBookings' },
         {
           model: TourService,
           as: 'tourServices',
           include: [{ model: Supplier, as: 'supplier' }]
-        }
+        },
+        { model: AirBooking, as: 'airBookings' }
       ]
     })
 
@@ -171,7 +180,8 @@ export async function update(
       { where: { id: req.params.id } }
     )
 
-    if (!tour) throw new ResponseError('not found location', 404)
+    if (!tour)
+      throw new ResponseError('not found location', 404)
 
     const response: IResponseObject<number> = {
       message: 'query success',

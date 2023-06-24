@@ -15,36 +15,85 @@ import Tour from './tour.model'
 import TourService from './tourService.model'
 
 // roles
-Permissions.belongsTo(Role, { foreignKey: 'roleId', as: 'role' })
-Permissions.belongsTo(Entity, { foreignKey: 'entityId', as: 'entity' })
+Permissions.belongsTo(Role, {
+  foreignKey: 'roleId',
+  as: 'role'
+})
+Permissions.belongsTo(Entity, {
+  foreignKey: 'entityId',
+  as: 'entity'
+})
 
 //company
-Company.belongsTo(Account, { foreignKey: 'operatorId', as: 'operator' })
+Company.belongsTo(Account, {
+  foreignKey: 'operatorId',
+  as: 'operator'
+})
 
 //supllier
-Supplier.belongsTo(Account, { foreignKey: 'operatorId', as: 'operator' })
+Supplier.belongsTo(Account, {
+  foreignKey: 'operatorId',
+  as: 'operator'
+})
 
 //account
-Account.belongsTo(Role, { as: 'role', foreignKey: 'roleId' })
-Account.belongsTo(Company, { foreignKey: 'companyId', as: 'company' })
-Account.belongsTo(Account, { foreignKey: 'operatorId', as: 'operator' })
+Account.belongsTo(Role, {
+  as: 'role',
+  foreignKey: 'roleId'
+})
+Account.belongsTo(Company, {
+  foreignKey: 'companyId',
+  as: 'company'
+})
+Account.belongsTo(Account, {
+  foreignKey: 'operatorId',
+  as: 'operator'
+})
 
 //role
-Role.hasMany(Permissions, { as: 'permissions', foreignKey: 'roleId' })
-Role.hasMany(Account, { foreignKey: 'roleId', as: 'accounts' })
+Role.hasMany(Permissions, {
+  as: 'permissions',
+  foreignKey: 'roleId'
+})
+
+Role.hasMany(Account, {
+  foreignKey: 'roleId',
+  as: 'accounts'
+})
 
 //tour
-Tour.belongsTo(Account, { as: 'tourMan', foreignKey: 'tourManId' })
-Tour.belongsTo(Company, { as: 'company', foreignKey: 'companyId' })
-Tour.belongsTo(Account, { as: 'tourGuide', foreignKey: 'tourGuideId' })
-Tour.hasMany(TourService, { as: 'tourServices', foreignKey: 'tourId' })
+Tour.belongsTo(Account, {
+  as: 'tourMan',
+  foreignKey: 'tourManId'
+})
+
+Tour.belongsTo(Company, {
+  as: 'company',
+  foreignKey: 'companyId'
+})
+Tour.belongsTo(Account, {
+  as: 'tourGuide',
+  foreignKey: 'tourGuideId'
+})
+Tour.hasMany(TourService, {
+  as: 'tourServices',
+  foreignKey: 'tourId'
+})
+Tour.hasMany(AirBooking, {
+  as: 'airBookings',
+  foreignKey: 'tourId'
+})
 
 // tourservice
 TourService.belongsTo(Supplier, {
   as: 'supplier',
   foreignKey: 'supplierId'
 })
-TourService.belongsTo(Tour, { as: 'tour', foreignKey: 'tourId' })
+
+TourService.belongsTo(Tour, {
+  as: 'tour',
+  foreignKey: 'tourId'
+})
 
 //tourPayment
 TourPayment.belongsTo(TourService, {
@@ -53,15 +102,37 @@ TourPayment.belongsTo(TourService, {
 })
 
 //booking
-Booking.belongsTo(Tour, { as: 'tour', foreignKey: 'tourId' })
-Booking.belongsTo(Account, { as: 'sale', foreignKey: 'saleId' })
-Booking.belongsTo(Account, { as: 'client', foreignKey: 'clientId' })
-BookingPayment.belongsTo(Booking, { as: 'booking', foreignKey: 'bookingId' })
+Booking.belongsTo(Tour, {
+  as: 'tour',
+  foreignKey: 'tourId'
+})
+Booking.belongsTo(Account, {
+  as: 'sale',
+  foreignKey: 'saleId'
+})
+Booking.belongsTo(Account, {
+  as: 'client',
+  foreignKey: 'clientId'
+})
+Booking.hasMany(BookingPayment, {
+  as: 'bookingPayments',
+  foreignKey: 'bookingId'
+})
+// booking payment
+BookingPayment.belongsTo(Booking, {
+  as: 'booking',
+  foreignKey: 'bookingId'
+})
 
 //airBooking
-AirBooking.belongsTo(Tour, { as: 'tour', foreignKey: 'tourId' })
-AirBooking.belongsTo(Supplier, { as: 'supplier', foreignKey: 'supplierId' })
-Tour.hasMany(AirBooking, { as: 'airBookings', foreignKey: 'tourId' })
+AirBooking.belongsTo(Tour, {
+  as: 'tour',
+  foreignKey: 'tourId'
+})
+AirBooking.belongsTo(Supplier, {
+  as: 'supplier',
+  foreignKey: 'supplierId'
+})
 AirBookingPayment.belongsTo(AirBooking, {
   as: 'airBooking',
   foreignKey: 'airBookingId'
@@ -172,5 +243,6 @@ export {
   Company,
   Supplier,
   TourService,
-  Booking
+  Booking,
+  BookingPayment
 }

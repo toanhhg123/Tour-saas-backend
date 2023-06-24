@@ -1,34 +1,33 @@
 import {
   create,
+  getByBookingId,
   remove,
-  update,
-  getByTourId
-} from '@/controllers/booking.controller'
+  update
+} from '@/controllers/bookingPayment.controller'
 import { authorize } from '@/middlewares/auth.middeware'
 import { validateBody } from '@/middlewares/validate.middleware'
-import { IBooking } from '@/models/booking.model'
-import { validateBooking } from '@/utils/validations'
+import { IBookingPayment } from '@/models/bookingPayment.model'
+import { validateBookingPayment } from '@/utils/validations'
 import { Router } from 'express'
 
 const router = Router()
 
+router.get('/booking/:id', authorize(['Sys.Admin']), getByBookingId)
+
 router.post(
   '/',
-  validateBody<IBooking>(validateBooking),
+  validateBody<IBookingPayment>(validateBookingPayment),
   authorize(['Sys.Admin']),
   create
 )
-router.get(
-  '/tour/:tourId',
-  authorize(['Sys.Admin']),
-  getByTourId
-)
+
 router.patch(
   '/:id',
-  validateBody<IBooking>(validateBooking),
+  validateBody<IBookingPayment>(validateBookingPayment),
   authorize(['Sys.Admin']),
   update
 )
+
 router.delete('/:id', authorize(['Sys.Admin']), remove)
 
 export default router

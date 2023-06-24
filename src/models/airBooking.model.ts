@@ -1,36 +1,34 @@
 import { sequelize as sequelizeMysql } from '@/config/db/mysql.db'
-import type { CreationOptional, ForeignKey, InferAttributes, InferCreationAttributes } from 'sequelize'
+import type {
+  CreationOptional,
+  ForeignKey,
+  InferAttributes,
+  InferCreationAttributes
+} from 'sequelize'
 import { DataTypes, Model } from 'sequelize'
 import type Supplier from './supplier.model'
 import type Tour from './tour.model'
 
-class AirBooking extends Model<InferAttributes<AirBooking>, InferCreationAttributes<AirBooking>> {
+class AirBooking extends Model<
+  InferAttributes<AirBooking>,
+  InferCreationAttributes<AirBooking>
+> {
   declare id: CreationOptional<string>
   declare code: string
   declare route: string
   declare depDay: Date
   declare depTime: Date
   declare retDate: Date
-
   declare retTime: Date
-
   declare numPax: number
-
   declare fare: number
-
   declare tax: number
-
   declare fee: number
-
   declare nameDate: Date
-
   declare payDate: Date
-
   declare note: string
-
   public supplierId!: ForeignKey<Supplier['id']>
   public tourId!: ForeignKey<Tour['id']>
-
   public createdAt!: CreationOptional<Date>
   public updatedAt!: CreationOptional<Date>
 }

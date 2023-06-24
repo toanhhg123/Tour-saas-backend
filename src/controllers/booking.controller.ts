@@ -1,7 +1,11 @@
 import { ResponseError } from '@/models/CustomError.model'
-import { Account, Booking } from '@/models'
+import { Account, Booking, BookingPayment } from '@/models'
 import type IResponseObject from '@/types/ResponseObject'
-import type { NextFunction, Request, Response } from 'express'
+import type {
+  NextFunction,
+  Request,
+  Response
+} from 'express'
 import { IBooking } from '@/models/booking.model'
 import Tour from '@/models/tour.model'
 
@@ -19,7 +23,8 @@ export async function create(
         { model: Account, as: 'sale' }
       ]
     })
-    if (!recordRes) throw new ResponseError('Not found booking')
+    if (!recordRes)
+      throw new ResponseError('Not found booking')
     const response: IResponseObject<Booking> = {
       message: 'query success',
       element: recordRes,
@@ -43,7 +48,8 @@ export async function getByTourId(
       include: [
         { model: Tour, as: 'tour' },
         { model: Account, as: 'client' },
-        { model: Account, as: 'sale' }
+        { model: Account, as: 'sale' },
+        { model: BookingPayment, as: 'bookingPayments' }
       ]
     })
 
@@ -65,7 +71,9 @@ export async function update(
   next: NextFunction
 ): Promise<Response<IResponseObject<unknown>> | void> {
   try {
-    const [record] = await Booking.update(req.body, { where: { id: req.params.id } })
+    const [record] = await Booking.update(req.body, {
+      where: { id: req.params.id }
+    })
 
     const response: IResponseObject<number> = {
       message: 'query success',
@@ -85,7 +93,9 @@ export async function remove(
   next: NextFunction
 ): Promise<Response<IResponseObject<unknown>> | void> {
   try {
-    const record = await Booking.destroy({ where: { id: req.params.id } })
+    const record = await Booking.destroy({
+      where: { id: req.params.id }
+    })
     if (!record) throw new ResponseError('delete faild')
     const response: IResponseObject<number> = {
       message: 'query success',

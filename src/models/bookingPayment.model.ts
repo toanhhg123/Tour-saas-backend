@@ -1,16 +1,32 @@
 import { sequelize as sequelizeMysql } from '@/config/db/mysql.db'
-import type { CreationOptional, ForeignKey, InferAttributes, InferCreationAttributes } from 'sequelize'
+import type {
+  CreationOptional,
+  ForeignKey,
+  InferAttributes,
+  InferCreationAttributes
+} from 'sequelize'
 import { DataTypes, Model } from 'sequelize'
 import type Booking from './booking.model'
 
-class BookingPayment extends Model<InferAttributes<BookingPayment>, InferCreationAttributes<BookingPayment>> {
+export interface IBookingPayment {
+  id: string
+  date: Date
+  amount: number
+  note: string
+  bookingId: string
+  createdAt: Date
+  updatedAt: Date
+}
+
+class BookingPayment extends Model<
+  InferAttributes<BookingPayment>,
+  InferCreationAttributes<BookingPayment>
+> {
   declare id: CreationOptional<string>
   declare date: Date
   declare amount: number
   declare note: string
-
   public bookingId!: ForeignKey<Booking['id']>
-
   public createdAt!: CreationOptional<Date>
   public updatedAt!: CreationOptional<Date>
 }

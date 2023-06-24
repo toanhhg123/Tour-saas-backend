@@ -6,14 +6,20 @@ import {
   getProfile,
   getByCompanyId,
   update,
-  getAccountsByRoles
+  getAccountsByRoles,
+  searchEmail
 } from '@/controllers/account.controller'
 import { validateAccount } from '@/utils/validations'
-import type { NextFunction, Request, Response } from 'express'
+import type {
+  NextFunction,
+  Request,
+  Response
+} from 'express'
 import { Router } from 'express'
 import { validateBody } from '../middlewares/validate.middleware'
 import type { TypeRole } from '@/types/IAuthType'
 import { authorize } from '@/middlewares/auth.middeware'
+import { asyncHandler } from '@/middlewares/error.middleware'
 const router = Router()
 
 const mapTypeRole =
@@ -23,20 +29,37 @@ const mapTypeRole =
     next()
   }
 
-router.get('/role', getAccountsByRoles)
-router.get('/profile', authorize(), getProfile)
-router.get('/findOne', authorize(), findeByIdAndEmail)
-router.get('/company/:companyid', authorize(), getByCompanyId)
+router.get('/search', asyncHandler(searchEmail))
+router.get('/role', asyncHandler(getAccountsByRoles))
+router.get(
+  '/profile',
+  authorize(),
+  asyncHandler(getProfile)
+)
+router.get(
+  '/findOne',
+  authorize(),
+  asyncHandler(findeByIdAndEmail)
+)
+router.get(
+  '/company/:companyid',
+  authorize(),
+  asyncHandler(getByCompanyId)
+)
 
 router.get('/:id', findOne)
-router.get('/', authorize(['Sys.Admin']), getAll)
+router.get(
+  '/',
+  authorize(['Sys.Admin']),
+  asyncHandler(getAll)
+)
 
 router.post(
   '/sys-admin',
   validateBody(validateAccount),
   authorize(['Sys.Admin']),
   mapTypeRole('Sys.Admin'),
-  create
+  asyncHandler(create)
 )
 
 router.post(
@@ -44,7 +67,7 @@ router.post(
   validateBody(validateAccount),
   authorize(['Sys.Admin']),
   mapTypeRole('Oper.Admin'),
-  create
+  asyncHandler(create)
 )
 
 router.post(
@@ -52,7 +75,7 @@ router.post(
   validateBody(validateAccount),
   authorize(['Sys.Admin', 'Sys.Admin']),
   mapTypeRole('Oper.Mamnager'),
-  create
+  asyncHandler(create)
 )
 
 router.post(
@@ -60,7 +83,7 @@ router.post(
   validateBody(validateAccount),
   authorize(['Oper.Mamnager', 'Sys.Admin']),
   mapTypeRole('Oper.Sales'),
-  create
+  asyncHandler(create)
 )
 
 router.post(
@@ -68,7 +91,7 @@ router.post(
   validateBody(validateAccount),
   authorize(['Oper.Mamnager', 'Sys.Admin']),
   mapTypeRole('Oper.TourMan'),
-  create
+  asyncHandler(create)
 )
 
 router.post(
@@ -76,7 +99,7 @@ router.post(
   validateBody(validateAccount),
   authorize(['Client', 'Sys.Admin']),
   mapTypeRole('Client'),
-  create
+  asyncHandler(create)
 )
 
 //patch
@@ -101,7 +124,7 @@ router.patch(
   validateBody(validateAccount),
   authorize(['Sys.Admin', 'Sys.Admin']),
   mapTypeRole('Oper.Mamnager'),
-  update
+  asyncHandler(update)
 )
 
 router.patch(
@@ -109,7 +132,7 @@ router.patch(
   validateBody(validateAccount),
   authorize(['Oper.Mamnager', 'Sys.Admin']),
   mapTypeRole('Oper.Sales'),
-  update
+  asyncHandler(update)
 )
 
 router.patch(
@@ -117,7 +140,7 @@ router.patch(
   validateBody(validateAccount),
   authorize(['Oper.Mamnager', 'Sys.Admin']),
   mapTypeRole('Oper.TourMan'),
-  update
+  asyncHandler(update)
 )
 
 router.patch(
@@ -125,7 +148,7 @@ router.patch(
   validateBody(validateAccount),
   authorize(['Client', 'Sys.Admin']),
   mapTypeRole('Client'),
-  update
+  asyncHandler(update)
 )
 
 // router.delete('/:id', remove)

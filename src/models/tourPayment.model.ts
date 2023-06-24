@@ -1,10 +1,18 @@
 import { sequelize as sequelizeMysql } from '@/config/db/mysql.db'
 import { entites } from '@/types/consts'
-import type { CreationOptional, ForeignKey, InferAttributes, InferCreationAttributes } from 'sequelize'
+import type {
+  CreationOptional,
+  ForeignKey,
+  InferAttributes,
+  InferCreationAttributes
+} from 'sequelize'
 import { DataTypes, Model } from 'sequelize'
 import type TourService from './tourService.model'
 
-class TourPayment extends Model<InferAttributes<TourPayment>, InferCreationAttributes<TourPayment>> {
+class TourPayment extends Model<
+  InferAttributes<TourPayment>,
+  InferCreationAttributes<TourPayment>
+> {
   declare id: CreationOptional<string>
   declare date: Date
   declare amount: number
@@ -39,7 +47,11 @@ TourPayment.init(
       type: DataTypes.DOUBLE
     }
   },
-  { tableName: entites.TourPayment, timestamps: true, sequelize: sequelizeMysql }
+  {
+    tableName: entites.TourPayment,
+    timestamps: true,
+    sequelize: sequelizeMysql
+  }
 )
 
 export default TourPayment

@@ -10,10 +10,16 @@ import type { IAuthRequest } from '../types/IAuthType'
 import { TourType } from '@/models/tour.model'
 import { TypeTour } from '@/models/tourService.model'
 import type { ISupplier } from '@/models/supplier.model'
-import { IBooking, StatusBooking } from '@/models/booking.model'
+import {
+  IBooking,
+  StatusBooking
+} from '@/models/booking.model'
 import { ICompany } from '@/models/company.model'
+import { IBookingPayment } from '@/models/bookingPayment.model'
 
-export const validateTourImage = (tourImage: ITourImage) => {
+export const validateTourImage = (
+  tourImage: ITourImage
+) => {
   const tourImageSchema = joi.object<ITourImage>({
     tourId: joi.string().required()
   })
@@ -32,6 +38,20 @@ export const validateCompany = (data: ICompany) => {
   return dataValidate.validate(data)
 }
 
+export const validateBookingPayment = (
+  data: IBookingPayment
+) => {
+  const dataValidate = joi.object<IBookingPayment>({
+    id: joi.string().optional(),
+    date: joi.date().required(),
+    amount: joi.number().required(),
+    note: joi.string().required(),
+    bookingId: joi.string().required()
+  })
+
+  return dataValidate.validate(data)
+}
+
 export const validateTour = (tourImage: ITour) => {
   const tourImageSchema = joi.object<ITour>({
     name: joi.string().required(),
@@ -39,7 +59,7 @@ export const validateTour = (tourImage: ITour) => {
     metatitle: joi.string(),
     route: joi.array<string>().required(),
     transport: joi.string().required(),
-    companyId: joi.string().required(),
+    companyId: joi.string().optional(),
     departure: joi.string().required(),
     tranportId: joi.string().required(),
     visadate: joi.date().required(),
@@ -55,7 +75,9 @@ export const validateTour = (tourImage: ITour) => {
   return tourImageSchema.validate(tourImage)
 }
 
-export const validateTourService = (tourImage: ITourService) => {
+export const validateTourService = (
+  tourImage: ITourService
+) => {
   const tourImageSchema = joi.object<ITourService>({
     id: joi.string().allow(''),
     name: joi.string().required(),
@@ -79,7 +101,9 @@ export const validateBooking = (data: IBooking) => {
     bookDate: joi.date().required(),
     comfirmDate: joi.date().required(),
     price: joi.number().required(),
-    status: joi.string().valid(...Object.values(StatusBooking)),
+    status: joi
+      .string()
+      .valid(...Object.values(StatusBooking)),
     com: joi.number().required(),
     paxNum: joi.number().required(),
     clientId: joi.string().required(),
@@ -96,11 +120,15 @@ export const validateAccount = (data: IAccount) => {
     phoneNumber: joi
       .string()
       .regex(/^[0-9]{10}$/)
-      .messages({ 'string.pattern.base': `Phone number must have 10 digits.` })
+      .messages({
+        'string.pattern.base': `Phone number must have 10 digits.`
+      })
       .required(),
     email: joi.string().email().required(),
     address: joi.string().required(),
-    status: joi.string().valid(...Object.values(AccountStatus)),
+    status: joi
+      .string()
+      .valid(...Object.values(AccountStatus)),
     companyId: joi.string().allow(null),
     passport: joi.string().optional(),
     passportExp: joi.date().optional(),
@@ -137,7 +165,11 @@ export const validatePermission = (data: IPermission) => {
     perms: joi
       .array()
       .min(1)
-      .items(joi.string().valid('ALL', 'EDIT', 'READ', 'DELETE', 'CREATE'))
+      .items(
+        joi
+          .string()
+          .valid('ALL', 'EDIT', 'READ', 'DELETE', 'CREATE')
+      )
       .required(),
     roleId: joi.string().required(),
     entityId: joi.number().required()
@@ -161,7 +193,9 @@ export const validateSupplier = (data: ISupplier) => {
     phone: joi
       .string()
       .regex(/^[0-9]{10}$/)
-      .messages({ 'string.pattern.base': `Phone number must have 10 digits.` })
+      .messages({
+        'string.pattern.base': `Phone number must have 10 digits.`
+      })
       .required(),
     name: joi.string().required(),
     address: joi.string().required()

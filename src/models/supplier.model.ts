@@ -1,8 +1,13 @@
 import { sequelize as sequelizeMysql } from '@/config/db/mysql.db'
 import { entites } from '@/types/consts'
-import type { CreationOptional, ForeignKey, InferAttributes, InferCreationAttributes } from 'sequelize'
+import type {
+  CreationOptional,
+  ForeignKey,
+  InferAttributes,
+  InferCreationAttributes
+} from 'sequelize'
 import { DataTypes, Model } from 'sequelize'
-import Account from './account.model'
+import type Account from './account.model'
 
 export interface ISupplier {
   id: string
@@ -13,7 +18,10 @@ export interface ISupplier {
   email: string
 }
 
-class Supplier extends Model<InferAttributes<Supplier>, InferCreationAttributes<Supplier>> {
+class Supplier extends Model<
+  InferAttributes<Supplier>,
+  InferCreationAttributes<Supplier>
+> {
   declare id: CreationOptional<string>
   declare name: string
   declare address: string
@@ -66,7 +74,11 @@ Supplier.init(
       defaultValue: DataTypes.NOW
     }
   },
-  { tableName: entites.Supplier, timestamps: true, sequelize: sequelizeMysql }
+  {
+    tableName: entites.Supplier,
+    timestamps: true,
+    sequelize: sequelizeMysql
+  }
 )
 
 export default Supplier

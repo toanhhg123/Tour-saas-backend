@@ -1,7 +1,11 @@
-import { getAll, create, update } from '@/controllers/company.controller'
+import {
+  getAll,
+  create,
+  update
+} from '@/controllers/company.controller'
 import { authorize } from '@/middlewares/auth.middeware'
 import { validateBody } from '@/middlewares/validate.middleware'
-import { ICompany } from '@/models/company.model'
+import type { ICompany } from '@/models/company.model'
 import { validateCompany } from '@/utils/validations'
 import { Router } from 'express'
 const router = Router()
@@ -15,7 +19,11 @@ router.post(
   create
 )
 
-router.patch('/:id', authorize(['Oper.Mamnager', 'Sys.Admin']), update)
+router.patch(
+  '/:id',
+  authorize(['Oper.Mamnager', 'Sys.Admin']),
+  update
+)
 
 // router.delete('/:id', remove)
 

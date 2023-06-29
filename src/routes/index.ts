@@ -1,4 +1,7 @@
-import { handleError, notFound } from '@/middlewares/error.middleware'
+import {
+  handleError,
+  notFound
+} from '@/middlewares/error.middleware'
 import accountRoute from '@/routes/account.route'
 import authRoute from '@/routes/auth.route'
 import { type Express } from 'express'
@@ -8,6 +11,8 @@ import tourServiceRoute from '@/routes/tourService.route'
 import bookingRoute from '@/routes/booking.route'
 import companyRoute from '@/routes/company.route'
 import bookingPaymentRoute from '@/routes/bookingPayment.route'
+import visaGroupRoute from '@/routes/visaGroup.route'
+import airBookingRoute from '@/routes/airBooking.route'
 
 const useRoutes = async (app: Express): Promise<void> => {
   app.use('/api/v1/account', accountRoute)
@@ -18,6 +23,8 @@ const useRoutes = async (app: Express): Promise<void> => {
   app.use('/api/v1/booking', bookingRoute)
   app.use('/api/v1/company', companyRoute)
   app.use('/api/v1/bookingPayment', bookingPaymentRoute)
+  app.use('/api/v1/VisaGroup', visaGroupRoute)
+  app.use('/api/v1/airBooking', airBookingRoute)
   app.use(notFound)
   app.use(handleError)
 }

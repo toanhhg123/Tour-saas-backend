@@ -1,7 +1,11 @@
 import { ResponseError } from '@/models/CustomError.model'
 import { Supplier } from '@/models'
 import type IResponseObject from '@/types/ResponseObject'
-import type { NextFunction, Request, Response } from 'express'
+import type {
+  NextFunction,
+  Request,
+  Response
+} from 'express'
 import type { ISupplier } from '@/models/supplier.model'
 
 export async function getAll(
@@ -48,8 +52,11 @@ export async function update(
   next: NextFunction
 ): Promise<Response<IResponseObject<unknown>> | void> {
   try {
-    const [number] = await Supplier.update(req.body, { where: { id: req.params.id } })
-    if (!number) throw new ResponseError('update faild', 409)
+    const [number] = await Supplier.update(req.body, {
+      where: { id: req.params.id }
+    })
+    if (!number)
+      throw new ResponseError('update faild', 409)
     const response: IResponseObject<number> = {
       message: 'query success',
       element: number,

@@ -12,8 +12,8 @@ import { DataTypes, Model } from 'sequelize'
 import type Account from './account.model'
 import type TourImage from './tourImage.model'
 import type AirBooking from './airBooking.model'
-import TourService from './tourService.model'
-import Company from './company.model'
+import type TourService from './tourService.model'
+import type Company from './company.model'
 
 export enum TourType {
   OPEN = 'open',
@@ -42,7 +42,10 @@ export interface ITour {
 }
 
 export const STRING_CONCAT = '<<--->>'
-class Tour extends Model<InferAttributes<Tour>, InferCreationAttributes<Tour>> {
+class Tour extends Model<
+  InferAttributes<Tour>,
+  InferCreationAttributes<Tour>
+> {
   declare id: CreationOptional<string>
   declare name: string
   declare desc?: string
@@ -114,7 +117,9 @@ Tour.init(
     route: {
       type: DataTypes.STRING,
       get() {
-        return this.getDataValue('route').split(STRING_CONCAT)
+        return this.getDataValue('route').split(
+          STRING_CONCAT
+        )
       }
     },
     companyId: {

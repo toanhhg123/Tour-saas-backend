@@ -1,0 +1,38 @@
+version: 3
+
+services:
+  mysql:
+    image: mysql:latest
+    restart: always
+    networks:
+      - saas-net-work
+    ports:
+      - '3306:3306'
+    environment:
+      MYSQL_ROOT_PASSWORD: example
+      MYSQL_DATABASE: 'saas'
+      MYSQL_USER: root
+      MYSQL_PASSWORD: 'dockerps'
+
+  redis:
+    image: redis:latest
+    restart: always
+    networks:
+      - saas-net-work
+    ports:
+      - '6379:6379'
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - '8000:8080'
+    networks:
+      - saas-net-work
+    depends_on:
+      - mysql
+      - redis
+
+networks:
+  saas-net-work:

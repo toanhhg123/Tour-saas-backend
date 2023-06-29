@@ -1,6 +1,12 @@
 import { sequelize as sequelizeMysql } from '@/config/db/mysql.db'
 import { entites } from '@/types/consts'
-import type { BelongsTo, CreationOptional, ForeignKey, InferAttributes, InferCreationAttributes } from 'sequelize'
+import type {
+  BelongsTo,
+  CreationOptional,
+  ForeignKey,
+  InferAttributes,
+  InferCreationAttributes
+} from 'sequelize'
 import { DataTypes, Model } from 'sequelize'
 import type Role from './role.model'
 import type Entity from './entity.model'
@@ -13,7 +19,10 @@ export interface IPermission {
 }
 
 const STRING_CONCAT = '<<--->>'
-class Permission extends Model<InferAttributes<Permission>, InferCreationAttributes<Permission>> {
+class Permission extends Model<
+  InferAttributes<Permission>,
+  InferCreationAttributes<Permission>
+> {
   public declare id: CreationOptional<string>
   public declare perms: string
 
@@ -45,7 +54,9 @@ Permission.init(
     perms: {
       type: DataTypes.STRING,
       get(): Array<string> {
-        return this.getDataValue('perms').split(STRING_CONCAT)
+        return this.getDataValue('perms').split(
+          STRING_CONCAT
+        )
       }
     },
     createdAt: {
@@ -59,7 +70,11 @@ Permission.init(
       defaultValue: DataTypes.NOW
     }
   },
-  { tableName: entites.Permission, timestamps: true, sequelize: sequelizeMysql }
+  {
+    tableName: entites.Permission,
+    timestamps: true,
+    sequelize: sequelizeMysql
+  }
 )
 
 export default Permission

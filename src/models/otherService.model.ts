@@ -1,47 +1,53 @@
 import { sequelize as sequelizeMysql } from '@/config/db/mysql.db'
 import type {
-  Association,
   CreationOptional,
-  HasManyGetAssociationsMixin,
+  ForeignKey,
   InferAttributes,
   InferCreationAttributes,
   NonAttribute
 } from 'sequelize'
 import { DataTypes, Model } from 'sequelize'
-import type Tour from './tour.model'
+import type Supplier from './supplier.model'
 
-class Location extends Model<
-  InferAttributes<Location>,
-  InferCreationAttributes<Location>
+export interface IOtherService {
+  id: string
+  name: string
+  price: number
+  supplierId: string
+  createdAt: Date
+  updatedAt: Date
+}
+
+class OtherService extends Model<
+  InferAttributes<OtherService>,
+  InferCreationAttributes<OtherService>
 > {
   declare id: CreationOptional<string>
   declare name: string
-  declare desc?: string
-
-  // public readonly roles?: Role[]
-  declare getTours: HasManyGetAssociationsMixin<Tour>
-  declare tours?: NonAttribute<Tour[]>
-
-  declare static associations: {
-    tours: Association<Location, Tour>
-  }
-
-  public createdAt!: CreationOptional<Date>
-  public updatedAt!: CreationOptional<Date>
+  declare price: number
+  declare supplierId: ForeignKey<Supplier['id']>
+  declare createdAt: CreationOptional<Date>
+  declare updatedAt: CreationOptional<Date>
+  declare supplier?: NonAttribute<Supplier>
 }
 
-Location.init(
+OtherService.init(
   {
     id: {
       type: DataTypes.UUID,
       primaryKey: true,
       defaultValue: DataTypes.UUIDV4
     },
+    supplierId: {
+      type: DataTypes.UUID
+    },
     name: {
       type: DataTypes.STRING
     },
-    desc: {
-      type: DataTypes.STRING
+
+    price: {
+      type: DataTypes.DOUBLE,
+      allowNull: false
     },
     createdAt: {
       type: DataTypes.DATE,
@@ -55,10 +61,10 @@ Location.init(
     }
   },
   {
-    tableName: 'Locations',
+    tableName: 'OtherServices',
     timestamps: true,
     sequelize: sequelizeMysql
   }
 )
 
-export default Location
+export default OtherService

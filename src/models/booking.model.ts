@@ -1,5 +1,10 @@
 import { sequelize as sequelizeMysql } from '@/config/db/mysql.db'
-import type { CreationOptional, ForeignKey, InferAttributes, InferCreationAttributes } from 'sequelize'
+import type {
+  CreationOptional,
+  ForeignKey,
+  InferAttributes,
+  InferCreationAttributes
+} from 'sequelize'
 import { DataTypes, Model } from 'sequelize'
 import type Account from './account.model'
 import type Tour from './tour.model'
@@ -25,7 +30,10 @@ export interface IBooking {
   updatedAt: Date
 }
 
-class Booking extends Model<InferAttributes<Booking>, InferCreationAttributes<Booking>> {
+class Booking extends Model<
+  InferAttributes<Booking>,
+  InferCreationAttributes<Booking>
+> {
   declare id: CreationOptional<string>
   declare bookDate: Date
   declare comfirmDate: Date
@@ -89,7 +97,11 @@ Booking.init(
       type: DataTypes.ENUM(...Object.values(StatusBooking))
     }
   },
-  { tableName: 'Bookings', timestamps: true, sequelize: sequelizeMysql }
+  {
+    tableName: 'Bookings',
+    timestamps: true,
+    sequelize: sequelizeMysql
+  }
 )
 
 export default Booking

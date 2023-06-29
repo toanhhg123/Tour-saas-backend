@@ -21,7 +21,11 @@ router.post(
   validateBody<ITour>(validateTour),
   create
 )
-router.patch('/:id', validateBody<ITour>(validateTour), update)
+router.patch(
+  '/:id',
+  validateBody<ITour>(validateTour),
+  update
+)
 
 // router.delete('/:id', remove)
 

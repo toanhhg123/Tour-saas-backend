@@ -25,7 +25,7 @@ const router = Router()
 const mapTypeRole =
   (typeRole: TypeRole) =>
   (req: Request, _res: Response, next: NextFunction) => {
-    req.query['typeRole'] = typeRole
+    req.query.typeRole = typeRole
     next()
   }
 

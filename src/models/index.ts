@@ -13,6 +13,8 @@ import Company from './company.model'
 import Supplier from './supplier.model'
 import Tour from './tour.model'
 import TourService from './tourService.model'
+import VisaGroup from './VisaGroup.model'
+import OtherService from './otherService.model'
 
 // roles
 Permissions.belongsTo(Role, {
@@ -138,6 +140,12 @@ AirBookingPayment.belongsTo(AirBooking, {
   foreignKey: 'airBookingId'
 })
 
+//OtherService
+OtherService.belongsTo(Supplier, {
+  foreignKey: 'supplierId',
+  as: 'supplier'
+})
+
 // //init Entity
 // sequelize
 //   .sync({ force: true })
@@ -244,5 +252,7 @@ export {
   Supplier,
   TourService,
   Booking,
-  BookingPayment
+  BookingPayment,
+  VisaGroup,
+  AirBooking
 }

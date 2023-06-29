@@ -1,6 +1,17 @@
-export type TypeEntity = 'Accounts' | 'Roles' | 'Companies' | 'Permissions' | 'Entities' | string
+export type TypeEntity =
+  | 'Accounts'
+  | 'Roles'
+  | 'Companies'
+  | 'Permissions'
+  | 'Entities'
+  | string
 
-export type TypePermission = 'ALL' | 'EDIT' | 'READ' | 'DELETE' | 'CREATE'
+export type TypePermission =
+  | 'ALL'
+  | 'EDIT'
+  | 'READ'
+  | 'DELETE'
+  | 'CREATE'
 
 export interface IEntity {
   Account: TypeEntity

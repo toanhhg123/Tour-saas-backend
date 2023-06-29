@@ -1,8 +1,12 @@
 import { ResponseError } from '@/models/CustomError.model'
 import { Company } from '@/models'
 import type IResponseObject from '@/types/ResponseObject'
-import type { NextFunction, Request, Response } from 'express'
-import { ICompany } from '@/models/company.model'
+import type {
+  NextFunction,
+  Request,
+  Response
+} from 'express'
+import type { ICompany } from '@/models/company.model'
 
 export async function getAll(
   req: Request<unknown, unknown, unknown>,

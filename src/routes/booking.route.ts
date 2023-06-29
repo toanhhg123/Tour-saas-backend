@@ -6,7 +6,7 @@ import {
 } from '@/controllers/booking.controller'
 import { authorize } from '@/middlewares/auth.middeware'
 import { validateBody } from '@/middlewares/validate.middleware'
-import { IBooking } from '@/models/booking.model'
+import type { IBooking } from '@/models/booking.model'
 import { validateBooking } from '@/utils/validations'
 import { Router } from 'express'
 

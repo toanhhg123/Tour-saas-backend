@@ -1,6 +1,11 @@
 import { sequelize as sequelizeMysql } from '@/config/db/mysql.db'
 import type Tour from '@/models/tour.model'
-import type { CreationOptional, ForeignKey, InferAttributes, InferCreationAttributes } from 'sequelize'
+import type {
+  CreationOptional,
+  ForeignKey,
+  InferAttributes,
+  InferCreationAttributes
+} from 'sequelize'
 import { DataTypes, Model } from 'sequelize'
 import type Supplier from './supplier.model'
 
@@ -25,7 +30,10 @@ export interface ITourService {
   updatedAt: Date
 }
 
-class TourService extends Model<InferAttributes<TourService>, InferCreationAttributes<TourService>> {
+class TourService extends Model<
+  InferAttributes<TourService>,
+  InferCreationAttributes<TourService>
+> {
   declare id: CreationOptional<string>
   declare name: string
   declare price: number
@@ -94,7 +102,11 @@ TourService.init(
       type: DataTypes.TEXT
     }
   },
-  { tableName: 'TourServices', timestamps: true, sequelize: sequelizeMysql }
+  {
+    tableName: 'TourServices',
+    timestamps: true,
+    sequelize: sequelizeMysql
+  }
 )
 
 export default TourService

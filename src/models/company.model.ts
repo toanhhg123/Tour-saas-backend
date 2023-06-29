@@ -7,7 +7,7 @@ import type {
   InferCreationAttributes
 } from 'sequelize'
 import { DataTypes, Model } from 'sequelize'
-import Account from './account.model'
+import type Account from './account.model'
 
 export interface ICompany {
   id: string
@@ -71,7 +71,11 @@ Company.init(
       defaultValue: DataTypes.NOW
     }
   },
-  { tableName: entites.Company, timestamps: true, sequelize: sequelizeMysql }
+  {
+    tableName: entites.Company,
+    timestamps: true,
+    sequelize: sequelizeMysql
+  }
 )
 
 export default Company

@@ -1,15 +1,15 @@
 import type IResponseObject from '@/types/ResponseObject'
-import { BookingPayment } from '@/models'
+import { VisaGroup } from '@/models'
 import type { Response, Request } from 'express'
-import type { IBookingPayment } from '@/models/bookingPayment.model'
+import type { IVisaGroup } from '@/models/VisaGroup.model'
 
 export async function create(
-  req: Request<unknown, unknown, IBookingPayment>,
+  req: Request<unknown, unknown, IVisaGroup>,
   res: Response
 ): Promise<Response<IResponseObject<unknown>> | void> {
-  const record = await BookingPayment.create(req.body)
+  const record = await VisaGroup.create(req.body)
 
-  const response: IResponseObject<BookingPayment> = {
+  const response: IResponseObject<VisaGroup> = {
     message: 'query success',
     element: record,
     status: 'ok'
@@ -21,25 +21,9 @@ export async function getAll(
   _req: Request<unknown, unknown>,
   res: Response
 ): Promise<Response<IResponseObject<unknown>> | void> {
-  const record = await BookingPayment.findAll()
+  const record = await VisaGroup.findAll()
 
-  const response: IResponseObject<BookingPayment[]> = {
-    message: 'query success',
-    element: record,
-    status: 'ok'
-  }
-  return res.json(response)
-}
-
-export async function getByBookingId(
-  req: Request<{ id: string }, unknown>,
-  res: Response
-): Promise<Response<IResponseObject<unknown>> | void> {
-  const record = await BookingPayment.findAll({
-    where: { bookingId: req.params.id }
-  })
-
-  const response: IResponseObject<BookingPayment[]> = {
+  const response: IResponseObject<VisaGroup[]> = {
     message: 'query success',
     element: record,
     status: 'ok'
@@ -48,10 +32,10 @@ export async function getByBookingId(
 }
 
 export async function update(
-  req: Request<{ id: string }, unknown, IBookingPayment>,
+  req: Request<{ id: string }, unknown, IVisaGroup>,
   res: Response
 ): Promise<Response<IResponseObject<unknown>> | void> {
-  const [record] = await BookingPayment.update(req.body, {
+  const [record] = await VisaGroup.update(req.body, {
     where: { id: req.params.id }
   })
 
@@ -67,7 +51,7 @@ export async function remove(
   req: Request<{ id: string }, unknown>,
   res: Response
 ): Promise<Response<IResponseObject<unknown>> | void> {
-  const record = await BookingPayment.destroy({
+  const record = await VisaGroup.destroy({
     where: { id: req.params.id }
   })
 

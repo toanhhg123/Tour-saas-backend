@@ -1,11 +1,23 @@
 import { client } from '@/config/db/redis.db'
-import { Account, Entity, Permissions, Role } from '@/models'
+import {
+  Account,
+  Entity,
+  Permissions,
+  Role
+} from '@/models'
 import { ResponseError } from '@/models/CustomError.model'
 import type { IPermission } from '@/models/permission.model'
 import { type IRole } from '@/models/role.model'
 import JwtService from '@/services/jwt.service'
-import type { NextFunction, Request, Response } from 'express'
-import type { IAuthRequest, IAuthResponse } from '../types/IAuthType'
+import type {
+  NextFunction,
+  Request,
+  Response
+} from 'express'
+import type {
+  IAuthRequest,
+  IAuthResponse
+} from '../types/IAuthType'
 import type IResponseObject from '../types/ResponseObject'
 import env from '@/config/env'
 import winstonLogger from '@/utils/logger.utils'
@@ -18,7 +30,11 @@ export async function getAllRole(
   try {
     const list = await Role.findAll({
       include: [
-        { model: Permissions, as: 'permissions', include: [{ model: Entity }] }
+        {
+          model: Permissions,
+          as: 'permissions',
+          include: [{ model: Entity }]
+        }
       ]
     })
 
@@ -43,11 +59,16 @@ export async function finOneRole(
   try {
     const record = await Role.findByPk(req.params.id, {
       include: [
-        { model: Permissions, as: 'permissions', include: [{ model: Entity }] }
+        {
+          model: Permissions,
+          as: 'permissions',
+          include: [{ model: Entity }]
+        }
       ]
     })
 
-    if (!record) throw new ResponseError('role not found', 404)
+    if (!record)
+      throw new ResponseError('role not found', 404)
     const response: IResponseObject<Role> = {
       message: 'query success',
       element: record,
@@ -68,7 +89,11 @@ export async function createRole(
 ): Promise<Response<IResponseObject<unknown>> | void> {
   try {
     if (req.bodyValid?.error)
-      throw new ResponseError('is valid body', 404, req.bodyValid.error)
+      throw new ResponseError(
+        'is valid body',
+        404,
+        req.bodyValid.error
+      )
 
     const record = await Role.create(req.body)
 
@@ -92,7 +117,11 @@ export async function createPremisstion(
 ): Promise<Response<IResponseObject<unknown>> | void> {
   try {
     if (req.bodyValid?.error)
-      throw new ResponseError('is valid body', 404, req.bodyValid.error)
+      throw new ResponseError(
+        'is valid body',
+        404,
+        req.bodyValid.error
+      )
 
     const record = new Permissions()
     record.setPerms(req.body.perms)
@@ -118,7 +147,11 @@ export async function deletePermisstion(
 ): Promise<Response<IResponseObject<unknown>> | void> {
   try {
     if (req.bodyValid?.error)
-      throw new ResponseError('is valid body', 404, req.bodyValid.error)
+      throw new ResponseError(
+        'is valid body',
+        404,
+        req.bodyValid.error
+      )
 
     const record = await Role.create(req.body)
 
@@ -145,9 +178,15 @@ export async function login(
       include: [{ model: Role, as: 'role' }]
     })
 
-    if (!user) throw new ResponseError('email not found', 404)
+    if (!user)
+      throw new ResponseError('email not found', 404)
 
-    if (!(await Account.validPassword(user, req.body.password)))
+    if (
+      !(await Account.validPassword(
+        user,
+        req.body.password
+      ))
+    )
       throw new ResponseError('incorrect password')
 
     const userToken: IAuthResponse = {
@@ -155,7 +194,9 @@ export async function login(
         id: user.id as string,
         role: user.role?.name || ''
       }),
-      refreshToken: JwtService.generateRefreshToken(user.id as string)
+      refreshToken: JwtService.generateRefreshToken(
+        user.id as string
+      )
     }
 
     const tokenRedis = await client.set(
@@ -165,7 +206,9 @@ export async function login(
     )
 
     if (!tokenRedis)
-      throw new ResponseError('login faild not set refresh token')
+      throw new ResponseError(
+        'login faild not set refresh token'
+      )
 
     req.session.userToken = userToken
 
@@ -188,8 +231,10 @@ export async function refreshToken(
 ): Promise<Response<IResponseObject<unknown>> | void> {
   try {
     const refreshToken = req.session.userToken?.refreshToken
-    if (!refreshToken) throw new ResponseError('not found refresh token')
-    const { id } = JwtService.decodeRefeshToken(refreshToken)
+    if (!refreshToken)
+      throw new ResponseError('not found refresh token')
+    const { id } =
+      JwtService.decodeRefeshToken(refreshToken)
     console.log('<<========>>')
 
     console.log({ refreshToken, id })
@@ -211,7 +256,9 @@ export async function refreshToken(
         id: user.id as string,
         role: user.role?.name || ''
       }),
-      refreshToken: JwtService.generateRefreshToken(user.id as string)
+      refreshToken: JwtService.generateRefreshToken(
+        user.id as string
+      )
     }
 
     const tokenRedis = await client.set(
@@ -221,7 +268,9 @@ export async function refreshToken(
     )
 
     if (!tokenRedis)
-      throw new ResponseError('login faild not set refresh token')
+      throw new ResponseError(
+        'login faild not set refresh token'
+      )
 
     req.session.userToken = userToken
 

@@ -32,9 +32,14 @@ const winstonFormat = winston.format.combine(
   winston.format.label({
     label: '[LOGGER]'
   }),
-  winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss:ms' }),
+  winston.format.timestamp({
+    format: 'YYYY-MM-DD HH:mm:ss:ms'
+  }),
   winston.format.align(),
-  winston.format.printf((info) => `${info.timestamp} ${info.level}: ${info.message}`)
+  winston.format.printf(
+    (info) =>
+      `${info.timestamp} ${info.level}: ${info.message}`
+  )
 )
 
 const winstonLogger = winston.createLogger({
@@ -47,7 +52,9 @@ const winstonLogger = winston.createLogger({
       filename: 'logs/error.log',
       level: 'error'
     }),
-    new winston.transports.File({ filename: 'logs/all.log' })
+    new winston.transports.File({
+      filename: 'logs/all.log'
+    })
   ]
 })
 

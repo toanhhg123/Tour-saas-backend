@@ -3,7 +3,11 @@ export class ResponseError {
   public message!: string
   public additionalInfo!: unknown
 
-  constructor(message: string, status = 400, additionalInfo = {}) {
+  constructor(
+    message: string,
+    status = 400,
+    additionalInfo = {}
+  ) {
     this.message = message
     this.status = status
     this.additionalInfo = additionalInfo

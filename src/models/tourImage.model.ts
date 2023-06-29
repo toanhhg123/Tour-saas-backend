@@ -1,6 +1,11 @@
 import { sequelize as sequelizeMysql } from '@/config/db/mysql.db'
 import type Tour from '@/models/tour.model'
-import type { CreationOptional, ForeignKey, InferAttributes, InferCreationAttributes } from 'sequelize'
+import type {
+  CreationOptional,
+  ForeignKey,
+  InferAttributes,
+  InferCreationAttributes
+} from 'sequelize'
 import { DataTypes, Model } from 'sequelize'
 
 export interface ITourImage {
@@ -13,7 +18,10 @@ export interface ITourImage {
   tourId: string
 }
 
-class TourImage extends Model<InferAttributes<TourImage>, InferCreationAttributes<TourImage>> {
+class TourImage extends Model<
+  InferAttributes<TourImage>,
+  InferCreationAttributes<TourImage>
+> {
   declare id: CreationOptional<string>
   declare alt: string
   declare idImageGoole: string
@@ -63,7 +71,11 @@ TourImage.init(
       defaultValue: DataTypes.NOW
     }
   },
-  { tableName: 'TourImages', timestamps: true, sequelize: sequelizeMysql }
+  {
+    tableName: 'TourImages',
+    timestamps: true,
+    sequelize: sequelizeMysql
+  }
 )
 
 export default TourImage

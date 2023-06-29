@@ -3,7 +3,8 @@ import type {
   CreationOptional,
   ForeignKey,
   InferAttributes,
-  InferCreationAttributes
+  InferCreationAttributes,
+  Optional
 } from 'sequelize'
 import { DataTypes, Model } from 'sequelize'
 import type Supplier from './supplier.model'
@@ -32,6 +33,13 @@ class AirBooking extends Model<
   public createdAt!: CreationOptional<Date>
   public updatedAt!: CreationOptional<Date>
 }
+
+export type IAirBooking = InferAttributes<AirBooking>
+
+export type AirBookingCreationAttributes = Optional<
+  AirBooking,
+  'id' | 'createdAt' | 'updatedAt'
+>
 
 AirBooking.init(
   {
@@ -100,7 +108,11 @@ AirBooking.init(
       type: DataTypes.TEXT
     }
   },
-  { tableName: 'AirBookings', timestamps: true, sequelize: sequelizeMysql }
+  {
+    tableName: 'AirBookings',
+    timestamps: true,
+    sequelize: sequelizeMysql
+  }
 )
 
 export default AirBooking

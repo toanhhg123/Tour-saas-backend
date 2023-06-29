@@ -1,6 +1,6 @@
 import { TourService } from '@/models'
 import { ResponseError } from '@/models/CustomError.model'
-import { ITourService } from '@/models/tourService.model'
+import type { ITourService } from '@/models/tourService.model'
 import type IResponseObject from '@/types/ResponseObject'
 import type {
   NextFunction,

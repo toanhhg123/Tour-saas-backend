@@ -63,7 +63,11 @@ BookingPayment.init(
       defaultValue: ''
     }
   },
-  { tableName: 'BookingPayments', timestamps: true, sequelize: sequelizeMysql }
+  {
+    tableName: 'BookingPayments',
+    timestamps: true,
+    sequelize: sequelizeMysql
+  }
 )
 
 export default BookingPayment

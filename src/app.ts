@@ -4,17 +4,12 @@ import useRoutes from '@/routes'
 import type { Express } from 'express'
 import express from 'express'
 
-const createApp = async () => {
-  try {
+export default class App {
+  public static async createApp() {
     const app: Express = express()
-
     await useMiddlewares(app)
     await connectDb()
     await useRoutes(app)
     return app
-  } catch (error) {
-    throw error
   }
 }
-
-export default createApp

@@ -6,7 +6,7 @@ import type {
   Request,
   Response
 } from 'express'
-import { IBooking } from '@/models/booking.model'
+import type { IBooking } from '@/models/booking.model'
 import Tour from '@/models/tour.model'
 
 export async function create(
@@ -15,7 +15,7 @@ export async function create(
   next: NextFunction
 ): Promise<Response<IResponseObject<unknown>> | void> {
   try {
-    let record = await Booking.create({ ...req.body })
+    const record = await Booking.create({ ...req.body })
     const recordRes = await Booking.findByPk(record.id, {
       include: [
         { model: Tour, as: 'tour' },

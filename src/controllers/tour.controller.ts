@@ -6,7 +6,8 @@ import {
 } from '@/models'
 import { ResponseError } from '@/models/CustomError.model'
 import AirBooking from '@/models/airBooking.model'
-import { ITour, STRING_CONCAT } from '@/models/tour.model'
+import type { ITour } from '@/models/tour.model'
+import { STRING_CONCAT } from '@/models/tour.model'
 import Tour from '@/models/tour.model'
 import type IResponseObject from '@/types/ResponseObject'
 import type {
@@ -39,7 +40,7 @@ export async function getAll(
     next(error)
   }
 }
-asdasdas
+
 export async function getByCompanyId(
   req: Request<{ companyId: string }, unknown, Location>,
   res: Response,

@@ -19,7 +19,10 @@ export interface IRole {
   desc?: string
 }
 
-class Role extends Model<InferAttributes<Role>, InferCreationAttributes<Role>> {
+class Role extends Model<
+  InferAttributes<Role>,
+  InferCreationAttributes<Role>
+> {
   public declare id: CreationOptional<string>
   public declare name: TypeRole
   public declare desc?: string
@@ -61,7 +64,11 @@ Role.init(
       defaultValue: DataTypes.NOW
     }
   },
-  { tableName: entites.Role, timestamps: true, sequelize: sequelizeMysql }
+  {
+    tableName: entites.Role,
+    timestamps: true,
+    sequelize: sequelizeMysql
+  }
 )
 
 export default Role

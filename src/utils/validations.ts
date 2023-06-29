@@ -10,12 +10,11 @@ import type { IAuthRequest } from '../types/IAuthType'
 import { TourType } from '@/models/tour.model'
 import { TypeTour } from '@/models/tourService.model'
 import type { ISupplier } from '@/models/supplier.model'
-import {
-  IBooking,
-  StatusBooking
-} from '@/models/booking.model'
-import { ICompany } from '@/models/company.model'
-import { IBookingPayment } from '@/models/bookingPayment.model'
+import type { IBooking } from '@/models/booking.model'
+import { StatusBooking } from '@/models/booking.model'
+import type { ICompany } from '@/models/company.model'
+import type { IBookingPayment } from '@/models/bookingPayment.model'
+import type { AirBookingCreationAttributes } from '@/models/airBooking.model'
 
 export const validateTourImage = (
   tourImage: ITourImage
@@ -25,6 +24,31 @@ export const validateTourImage = (
   })
 
   return tourImageSchema.validate(tourImage)
+}
+
+export const validateAirBooking = (
+  data: AirBookingCreationAttributes
+) => {
+  const dataValidate =
+    joi.object<AirBookingCreationAttributes>({
+      code: joi.string().required(),
+      route: joi.string().required(),
+      depDay: joi.date().required(),
+      depTime: joi.date().required(),
+      retDate: joi.date().required(),
+      retTime: joi.date().required(),
+      numPax: joi.number().required(),
+      fare: joi.number().required(),
+      tax: joi.number().required(),
+      fee: joi.number().required(),
+      nameDate: joi.date().required(),
+      payDate: joi.date().required(),
+      note: joi.string().required(),
+      supplierId: joi.string().required(),
+      tourId: joi.string().required()
+    })
+
+  return dataValidate.validate(data)
 }
 
 export const validateCompany = (data: ICompany) => {

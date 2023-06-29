@@ -5,12 +5,31 @@ import { Stream } from 'stream'
 export class GoogleDriveService {
   private driveClient
 
-  public constructor(clientId: string, clientSecret: string, redirectUri: string, refreshToken: string) {
-    this.driveClient = this.createDriveClient(clientId, clientSecret, redirectUri, refreshToken)
+  public constructor(
+    clientId: string,
+    clientSecret: string,
+    redirectUri: string,
+    refreshToken: string
+  ) {
+    this.driveClient = this.createDriveClient(
+      clientId,
+      clientSecret,
+      redirectUri,
+      refreshToken
+    )
   }
 
-  createDriveClient(clientId: string, clientSecret: string, redirectUri: string, refreshToken: string) {
-    const client = new google.auth.OAuth2(clientId, clientSecret, redirectUri)
+  createDriveClient(
+    clientId: string,
+    clientSecret: string,
+    redirectUri: string,
+    refreshToken: string
+  ) {
+    const client = new google.auth.OAuth2(
+      clientId,
+      clientSecret,
+      redirectUri
+    )
 
     client.setCredentials({ refresh_token: refreshToken })
 
@@ -20,7 +39,11 @@ export class GoogleDriveService {
     })
   }
 
-  async createFile(fileName: string, fileObject: Express.Multer.File, folderId = env.GOOGLE_DRIVE_FORDER_ID) {
+  async createFile(
+    fileName: string,
+    fileObject: Express.Multer.File,
+    folderId = env.GOOGLE_DRIVE_FORDER_ID
+  ) {
     try {
       const bufferStream = new Stream.PassThrough()
       bufferStream.end(fileObject.buffer)
@@ -43,13 +66,15 @@ export class GoogleDriveService {
 
   async publicFile(id: string) {
     try {
-      const res = await this.driveClient.permissions.create({
-        fileId: id || '',
-        requestBody: {
-          role: 'reader',
-          type: 'anyone'
+      const res = await this.driveClient.permissions.create(
+        {
+          fileId: id || '',
+          requestBody: {
+            role: 'reader',
+            type: 'anyone'
+          }
         }
-      })
+      )
       return res
     } catch (error) {
       throw error
@@ -71,7 +96,8 @@ export class GoogleDriveService {
     try {
       const getUrl = await this.driveClient.files.get({
         fileId: id,
-        fields: 'thumbnailLink , webContentLink , webViewLink'
+        fields:
+          'thumbnailLink , webContentLink , webViewLink'
       })
 
       return getUrl
@@ -82,10 +108,17 @@ export class GoogleDriveService {
 }
 
 const driveClientId = env.GOOGLE_DRIVE_CLIENT_ID || ''
-const driveClientSecret = env.GOOGLE_DRIVE_CLIENT_SECRET || ''
+const driveClientSecret =
+  env.GOOGLE_DRIVE_CLIENT_SECRET || ''
 const driveRedirectUri = env.GOOGLE_DRIVE_REDIRECT_URI || ''
-const driveRefreshToken = env.GOOGLE_DRIVE_REFRESH_TOKEN || ''
+const driveRefreshToken =
+  env.GOOGLE_DRIVE_REFRESH_TOKEN || ''
 
-const googleDriveService = new GoogleDriveService(driveClientId, driveClientSecret, driveRedirectUri, driveRefreshToken)
+const googleDriveService = new GoogleDriveService(
+  driveClientId,
+  driveClientSecret,
+  driveRedirectUri,
+  driveRefreshToken
+)
 
 export default googleDriveService

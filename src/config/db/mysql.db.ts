@@ -3,6 +3,7 @@ import env from '@/config/env'
 import winstonLogger from '@/utils/logger.utils'
 
 export const sequelize = new Sequelize(env.MYSQL_DATABASE) // Example for postgres
+console.log(env.MYSQL_DATABASE)
 
 const connectDb = async (): Promise<void> => {
   try {

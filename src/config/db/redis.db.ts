@@ -10,7 +10,9 @@ export const client = createClient({
 
 export default async function ConnectRedis() {
   try {
-    client.on('error', (err) => console.log('Redis Client Error', err))
+    client.on('error', (err) =>
+      console.log('Redis Client Error', err)
+    )
 
     await client.connect()
     winstonLogger.info('connect redis success')

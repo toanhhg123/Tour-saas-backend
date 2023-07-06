@@ -3,9 +3,11 @@ import {
   findOne,
   getAll,
   update,
-  getTourByManager
+  getTourByManager,
+  remove
 } from '@/controllers/tour.controller'
 import { authorize } from '@/middlewares/auth.middeware'
+import { asyncHandler } from '@/middlewares/error.middleware'
 import { validateBody } from '@/middlewares/validate.middleware'
 import type { ITour } from '@/models/tour.model'
 import { validateTour } from '@/utils/validations'
@@ -13,7 +15,7 @@ import { Router } from 'express'
 const router = Router()
 
 router.get('/:id', findOne)
-router.get('/', getAll)
+router.get('/', authorize(), asyncHandler(getAll))
 router.get('/withTourMan', getTourByManager)
 router.post(
   '/',
@@ -27,6 +29,6 @@ router.patch(
   update
 )
 
-// router.delete('/:id', remove)
+router.delete('/:id', asyncHandler(remove))
 
 export default router

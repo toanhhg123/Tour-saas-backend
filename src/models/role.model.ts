@@ -26,11 +26,9 @@ class Role extends Model<
   public declare id: CreationOptional<string>
   public declare name: TypeRole
   public declare desc?: string
-
   public createdAt!: CreationOptional<Date>
   public updatedAt!: CreationOptional<Date>
-
-  public readonly accounts?: Account[] // Define the association property
+  public readonly accounts?: Account[]
   public declare getPermissions: HasManyGetAssociationsMixin<Permisstion>
   public declare permissions?: NonAttribute<Permisstion[]>
   public static associations: {

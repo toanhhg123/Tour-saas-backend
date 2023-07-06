@@ -7,7 +7,8 @@ import {
   getByCompanyId,
   update,
   getAccountsByRoles,
-  searchEmail
+  searchEmail,
+  countUser
 } from '@/controllers/account.controller'
 import { validateAccount } from '@/utils/validations'
 import type {
@@ -31,6 +32,8 @@ const mapTypeRole =
 
 router.get('/search', asyncHandler(searchEmail))
 router.get('/role', asyncHandler(getAccountsByRoles))
+router.get('/count', asyncHandler(countUser))
+
 router.get(
   '/profile',
   authorize(),

@@ -4,12 +4,11 @@ import type {
   IAirBooking
 } from '@/models/airBooking.model'
 import AirBooking from '@/models/airBooking.model'
+import AirBookingPayment from '@/models/airBookingPayment.model'
 import type { WhereOptions } from 'sequelize'
+import airBookingPaymentService from './airBookingPayment.service'
 
 export class AirBookingService extends Singleton {
-  public async test() {
-    return 'test cc'
-  }
   //------------create-----------------//
   public async create(
     data: AirBookingCreationAttributes
@@ -40,15 +39,31 @@ export class AirBookingService extends Singleton {
   }
 
   //--------remove---------------//
-  public async remove(
-    opt: WhereOptions<IAirBooking>
-  ): Promise<number> {
-    const record = await AirBooking.destroy({
-      where: opt
+  public async remove(id: string): Promise<number> {
+    await AirBookingPayment.destroy({
+      where: { airBookingId: id }
     })
-    if (!record)
-      throw new Error('not found Air Booking delete')
+
+    const record = await AirBooking.destroy({
+      where: { id }
+    })
     return record
+  }
+
+  // -------remove by tourId ------------//
+  public async removeByTourId(tourId: string) {
+    const airBooking = await AirBooking.findOne({
+      where: { tourId }
+    })
+
+    if (airBooking) {
+      const { id } = airBooking
+      await airBookingPaymentService.removeByAriBookingId(
+        id
+      )
+      return await AirBooking.destroy({ where: { tourId } })
+    }
+    return 0
   }
 }
 

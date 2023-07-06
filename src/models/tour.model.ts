@@ -6,7 +6,8 @@ import type {
   HasManyGetAssociationsMixin,
   InferAttributes,
   InferCreationAttributes,
-  NonAttribute
+  NonAttribute,
+  Optional
 } from 'sequelize'
 import { DataTypes, Model } from 'sequelize'
 import type Account from './account.model'
@@ -21,25 +22,12 @@ export enum TourType {
   OTHER = 'other'
 }
 
-export interface ITour {
-  id: string
-  name: string
-  desc?: string
-  transport: string
-  metatitle: string
-  route: string[]
-  departure: string
-  tranportId: string
-  visadate: Date
-  link: string
-  companyId: string
-  type: TourType
-  detailLink: string
-  price: number
-  maxPax: number
-  tourManId: string
-  tourGuideId: string
-}
+export type ITour = InferAttributes<Tour>
+
+export type TourCreationAttributes = Optional<
+  Tour,
+  'id' | 'createdAt' | 'updatedAt'
+>
 
 export const STRING_CONCAT = '<<--->>'
 class Tour extends Model<
@@ -81,10 +69,6 @@ class Tour extends Model<
   declare createdAt: CreationOptional<Date>
   declare updatedAt: CreationOptional<Date>
 
-  public setRoute(val: string[]) {
-    this.route = val.join(STRING_CONCAT)
-  }
-
   declare getTourImages: HasManyGetAssociationsMixin<TourImage>
   declare getAirBookings: HasManyGetAssociationsMixin<AirBooking>
   declare toursImages?: NonAttribute<TourImage[]>
@@ -115,12 +99,7 @@ Tour.init(
       allowNull: false
     },
     route: {
-      type: DataTypes.STRING,
-      get() {
-        return this.getDataValue('route').split(
-          STRING_CONCAT
-        )
-      }
+      type: DataTypes.STRING
     },
     companyId: {
       type: DataTypes.UUID,

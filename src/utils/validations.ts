@@ -15,6 +15,7 @@ import { StatusBooking } from '@/models/booking.model'
 import type { ICompany } from '@/models/company.model'
 import type { IBookingPayment } from '@/models/bookingPayment.model'
 import type { AirBookingCreationAttributes } from '@/models/airBooking.model'
+import type { OtherServiceCreationAttributes } from '@/models/otherService.model'
 
 export const validateTourImage = (
   tourImage: ITourImage
@@ -76,12 +77,25 @@ export const validateBookingPayment = (
   return dataValidate.validate(data)
 }
 
+export const validateOtherService = (
+  data: OtherServiceCreationAttributes
+) => {
+  const dataValidate =
+    joi.object<OtherServiceCreationAttributes>({
+      name: joi.string().required(),
+      supplierId: joi.string().required(),
+      price: joi.number().required()
+    })
+
+  return dataValidate.validate(data)
+}
+
 export const validateTour = (tourImage: ITour) => {
   const tourImageSchema = joi.object<ITour>({
     name: joi.string().required(),
     desc: joi.string(),
     metatitle: joi.string(),
-    route: joi.array<string>().required(),
+    route: joi.string().optional().allow(''),
     transport: joi.string().required(),
     companyId: joi.string().optional(),
     departure: joi.string().required(),

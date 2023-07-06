@@ -28,16 +28,7 @@ export async function getAllRole(
   next: NextFunction
 ): Promise<Response<IResponseObject<unknown>> | void> {
   try {
-    const list = await Role.findAll({
-      include: [
-        {
-          model: Permissions,
-          as: 'permissions',
-          include: [{ model: Entity }]
-        }
-      ]
-    })
-
+    const list = await Role.findAll()
     const response: IResponseObject<Role[]> = {
       message: 'query success',
       element: list,
@@ -212,9 +203,9 @@ export async function login(
 
     req.session.userToken = userToken
 
-    const response: IResponseObject<string> = {
+    const response: IResponseObject<IAuthResponse> = {
       message: 'query success',
-      element: 'success',
+      element: userToken,
       status: 'ok'
     }
 

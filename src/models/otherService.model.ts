@@ -4,19 +4,11 @@ import type {
   ForeignKey,
   InferAttributes,
   InferCreationAttributes,
-  NonAttribute
+  NonAttribute,
+  Optional
 } from 'sequelize'
 import { DataTypes, Model } from 'sequelize'
 import type Supplier from './supplier.model'
-
-export interface IOtherService {
-  id: string
-  name: string
-  price: number
-  supplierId: string
-  createdAt: Date
-  updatedAt: Date
-}
 
 class OtherService extends Model<
   InferAttributes<OtherService>,
@@ -26,10 +18,18 @@ class OtherService extends Model<
   declare name: string
   declare price: number
   declare supplierId: ForeignKey<Supplier['id']>
+  declare isDeleted: boolean
   declare createdAt: CreationOptional<Date>
   declare updatedAt: CreationOptional<Date>
   declare supplier?: NonAttribute<Supplier>
 }
+
+export type IOtherService = InferAttributes<OtherService>
+
+export type OtherServiceCreationAttributes = Optional<
+  IOtherService,
+  'id' | 'createdAt' | 'updatedAt'
+>
 
 OtherService.init(
   {
@@ -44,7 +44,10 @@ OtherService.init(
     name: {
       type: DataTypes.STRING
     },
-
+    isDeleted: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false
+    },
     price: {
       type: DataTypes.DOUBLE,
       allowNull: false

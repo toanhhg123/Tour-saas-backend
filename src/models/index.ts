@@ -15,6 +15,9 @@ import Tour from './tour.model'
 import TourService from './tourService.model'
 import VisaGroup from './VisaGroup.model'
 import OtherService from './otherService.model'
+import OtherServiceBooking from './otherServiceBooking.model'
+import OtherServiceBookingPayment from './otherServiceBookingPayment.model'
+import VisaBooking from './visaBooking.model'
 
 // roles
 Permissions.belongsTo(Role, {
@@ -146,6 +149,42 @@ OtherService.belongsTo(Supplier, {
   as: 'supplier'
 })
 
+//=====OtherServiceBooking=======//
+
+OtherServiceBooking.belongsTo(Account, {
+  as: 'client',
+  foreignKey: 'clientId'
+})
+
+OtherServiceBooking.belongsTo(Account, {
+  as: 'sale',
+  foreignKey: 'saleId'
+})
+
+OtherServiceBooking.belongsTo(OtherService, {
+  as: 'otherService',
+  foreignKey: 'otherServiceId'
+})
+
+//===otherServiceBookingPayment===//
+
+OtherServiceBookingPayment.belongsTo(OtherServiceBooking, {
+  as: 'otherServiceBooking',
+  foreignKey: 'otherServiceBookingId'
+})
+
+//=====visaGroup======//
+
+VisaGroup.hasMany(VisaBooking, {
+  as: 'visaBookings',
+  foreignKey: 'visaGroupId'
+})
+
+VisaBooking.belongsTo(VisaGroup, {
+  as: 'visaGroup',
+  foreignKey: 'visaGroupId'
+})
+
 // //init Entity
 // sequelize
 //   .sync({ force: true })
@@ -254,5 +293,11 @@ export {
   Booking,
   BookingPayment,
   VisaGroup,
-  AirBooking
+  AirBooking,
+  Tour,
+  AirBookingPayment,
+  OtherServiceBookingPayment,
+  VisaBooking,
+  OtherServiceBooking,
+  OtherService
 }

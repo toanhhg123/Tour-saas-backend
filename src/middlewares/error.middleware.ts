@@ -35,7 +35,7 @@ export const asyncHandler = (
     request: Request<any, any, any, any>,
     response: Response,
     next: NextFunction
-  ) => Promise<unknown | void>
+  ) => Promise<Response | NextFunction | void | unknown>
 ) => {
   const cb = (
     request: Request,

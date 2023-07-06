@@ -7,8 +7,9 @@ import {
 import { ResponseError } from '@/models/CustomError.model'
 import AirBooking from '@/models/airBooking.model'
 import type { ITour } from '@/models/tour.model'
-import { STRING_CONCAT } from '@/models/tour.model'
 import Tour from '@/models/tour.model'
+import tourService from '@/services/tour.service'
+import type { IPageAction } from '@/types/IPageAcction'
 import type IResponseObject from '@/types/ResponseObject'
 import type {
   Request,
@@ -17,28 +18,22 @@ import type {
 } from 'express'
 
 export async function getAll(
-  req: Request<unknown, unknown, Location>,
-  res: Response,
-  next: NextFunction
+  _req: Request<unknown, unknown, unknown, IPageAction>,
+  res: Response
 ): Promise<Response<IResponseObject<unknown>> | void> {
-  try {
-    const tours = await Tour.findAll({
-      include: [
-        { model: Account, as: 'tourMan' },
-        { model: Account, as: 'tourGuide' }
-      ]
-    })
+  console.log(_req.query)
+  const tours = await tourService.getAll({
+    ..._req.query,
+    userId: _req.user?.id
+  })
 
-    const response: IResponseObject<Tour[]> = {
-      message: 'query success',
-      element: tours,
-      status: 'ok'
-    }
-
-    return res.json(response)
-  } catch (error) {
-    next(error)
+  const response: IResponseObject<typeof tours> = {
+    message: 'query success',
+    element: tours,
+    status: 'ok'
   }
+
+  return res.json(response)
 }
 
 export async function getByCompanyId(
@@ -105,13 +100,9 @@ export async function create(
   next: NextFunction
 ): Promise<Response<IResponseObject<unknown>> | void> {
   try {
-    const { route, ...rest } = req.body
-
     const tour = new Tour({
-      ...(rest as unknown as Tour),
-      tourManId: req.user?.id ?? ''
+      ...req.body
     })
-    tour.setRoute(route)
 
     await tour.save()
     const response: IResponseObject<Tour> = {
@@ -175,8 +166,7 @@ export async function update(
   try {
     const [tour] = await Tour.update(
       {
-        ...req.body,
-        route: req.body.route.join(STRING_CONCAT)
+        ...req.body
       },
       { where: { id: req.params.id } }
     )
@@ -196,22 +186,18 @@ export async function update(
   }
 }
 
-// // export async function remove(
-// //   req: Request<{ id: string }, unknown, Location>,
-// //   res: Response,
-// //   next: NextFunction
-// // ): Promise<Response<IResponseObject<unknown>> | void> {
-// //   try {
-// //     const location = await Location.destroy({ where: { id: req.params.id } })
+export async function remove(
+  req: Request<{ id: string }, unknown, Location>,
+  res: Response,
+  _next: NextFunction
+): Promise<Response<IResponseObject<unknown>> | void> {
+  const num = await tourService.remove(req.params.id)
 
-// //     const response: IResponseObject<number> = {
-// //       message: 'query success',
-// //       element: location,
-// //       status: 'ok'
-// //     }
+  const response: IResponseObject<typeof num> = {
+    message: 'query success',
+    element: num,
+    status: 'ok'
+  }
 
-// //     return res.json(response)
-// //   } catch (error) {
-// //     next(error)
-// //   }
-// // }
+  return res.json(response)
+}

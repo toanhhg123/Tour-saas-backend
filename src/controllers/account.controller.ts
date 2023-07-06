@@ -10,16 +10,21 @@ import { ResponseError } from '../models/CustomError.model'
 import type { IAccount } from '../models/account.model'
 import { AccountStatus } from '../models/account.model'
 import { Op } from 'sequelize'
+import accountService from '@/services/account.service'
+import type { IPageAction } from '@/types/IPageAcction'
 
 export async function getAll(
-  _req: Request<unknown, unknown, Account>,
+  _req: Request<unknown, unknown, Account, IPageAction>,
   res: Response
 ): Promise<Response<IResponseObject<unknown>> | void> {
-  const accounts = await Account.findAll({
-    include: [{ model: Role, as: 'role' }]
+  const { _page, _totalPage } = _req.query
+  const accounts = await accountService.getAll({
+    ..._req.query,
+    _page: Number(_page ?? 1),
+    _totalPage: Number(_totalPage ?? 1)
   })
 
-  const response: IResponseObject<Account[]> = {
+  const response: IResponseObject<typeof accounts> = {
     message: 'query success',
     element: accounts,
     status: 'ok'
@@ -43,6 +48,27 @@ export async function getAccountsByRoles(
   const response: IResponseObject<Account[]> = {
     message: 'query success',
     element: accounts,
+    status: 'ok'
+  }
+
+  return res.json(response)
+}
+
+export async function countUser(
+  _req: Request<
+    unknown,
+    unknown,
+    unknown,
+    { typeRole: string }
+  >,
+  res: Response
+): Promise<Response<IResponseObject<unknown>> | void> {
+  const countUser = await accountService.count(
+    _req.query.typeRole
+  )
+  const response: IResponseObject<number> = {
+    message: 'query success',
+    element: countUser,
     status: 'ok'
   }
 

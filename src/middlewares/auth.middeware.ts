@@ -7,15 +7,28 @@ import type {
   Request,
   Response
 } from 'express'
+import { asyncHandler } from './error.middleware'
 
-export const authorize =
-  (arr?: TypeRole[]) =>
-  (req: Request, _res: Response, next: NextFunction) => {
-    try {
-      const token =
-        req.session.userToken?.accessToken ||
-        req.headers.authorization?.split(' ')?.at(1) ||
-        undefined
+export const authorize = (arr?: TypeRole[]) =>
+  asyncHandler(
+    async (
+      req: Request,
+      _res: Response,
+      next: NextFunction
+    ) => {
+      // ====> get Token in cookies
+      let token = req.session.userToken?.accessToken
+
+      // ====> get Token in Header with starts Bearer
+      if (!token) {
+        const tokenHeader = req.headers.authorization
+        if (
+          !tokenHeader ||
+          !tokenHeader.startsWith('Bearer')
+        )
+          throw new ResponseError('no authencation', 401)
+        token = tokenHeader.slice(7)
+      }
 
       if (!token)
         throw new ResponseError('no authencation', 401)
@@ -26,8 +39,7 @@ export const authorize =
         throw new ResponseError('forbidden', 403)
 
       req.user = decode
+
       return next()
-    } catch (error) {
-      throw error
     }
-  }
+  )

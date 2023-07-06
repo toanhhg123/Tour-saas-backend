@@ -57,7 +57,7 @@ class AirBookingController {
     res: Response
   ): Promise<Response<IResponseObject<unknown>> | void> {
     const { id } = _req.params
-    const record = await airBookingService.remove({ id })
+    const record = await airBookingService.remove(id)
 
     const response: IResponseObject<number> = {
       message: 'query success',

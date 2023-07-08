@@ -184,7 +184,6 @@ VisaBooking.belongsTo(VisaGroup, {
   as: 'visaGroup',
   foreignKey: 'visaGroupId'
 })
-
 // //init Entity
 // sequelize
 //   .sync({ force: true })

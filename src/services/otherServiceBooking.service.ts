@@ -1,16 +1,25 @@
-import { OtherServiceBooking } from '@/models'
+import { Account, OtherServiceBooking } from '@/models'
 import type { OSBookingCreationAttributes } from '@/models/otherServiceBooking.model'
 import otherServiceBookingPaymentService from './otherServiceBookingPayment.service'
 
 class OtherServiceBookingService {
   public async getByOtherServiceId(otherServiceId: string) {
     return await OtherServiceBooking.findAll({
-      where: { otherServiceId }
+      where: { otherServiceId },
+      include: [
+        { model: Account, as: 'client' },
+        { model: Account, as: 'sale' }
+      ]
     })
   }
 
   public async create(body: OSBookingCreationAttributes) {
-    return await OtherServiceBooking.create(body)
+    return await OtherServiceBooking.create(body, {
+      include: [
+        { model: Account, as: 'client' },
+        { model: Account, as: 'sale' }
+      ]
+    })
   }
 
   public async remove(id: string) {

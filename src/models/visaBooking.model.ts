@@ -6,7 +6,6 @@ import type {
   InferCreationAttributes
 } from 'sequelize'
 import { DataTypes, Model } from 'sequelize'
-import OtherServiceBooking from './otherServiceBooking.model'
 import type Tour from './tour.model'
 import type Account from './account.model'
 import type VisaGroup from './VisaGroup.model'

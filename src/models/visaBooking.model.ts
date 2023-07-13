@@ -3,7 +3,8 @@ import type {
   CreationOptional,
   ForeignKey,
   InferAttributes,
-  InferCreationAttributes
+  InferCreationAttributes,
+  Optional
 } from 'sequelize'
 import { DataTypes, Model } from 'sequelize'
 import type Tour from './tour.model'
@@ -28,6 +29,13 @@ class VisaBooking extends Model<
   public createdAt!: CreationOptional<Date>
   public updatedAt!: CreationOptional<Date>
 }
+
+export type IVisaBooking = InferAttributes<VisaBooking>
+
+export type VisaBookingCreationAttributes = Optional<
+  VisaBooking,
+  'id' | 'createdAt' | 'updatedAt'
+>
 
 VisaBooking.init(
   {

@@ -5,7 +5,7 @@ import type {
 } from '@/types/IPageAcction'
 import { initPageAction } from '@/types/IPageAcction'
 import { Op } from 'sequelize'
-
+import { AccountStatus } from '@/models/account.model'
 class AccountRepository {
   public countUser = async (
     role: string
@@ -37,7 +37,8 @@ class AccountRepository {
       limit,
       offset: skip,
       where: {
-        ...objSearch
+        ...objSearch,
+        status: AccountStatus.acctive
       },
       include: [{ model: Role, as: 'role' }]
     })

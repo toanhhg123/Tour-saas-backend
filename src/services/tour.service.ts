@@ -5,11 +5,20 @@ import type { TourCreationAttributes } from '@/models/tour.model'
 import _tourService from './tourService.service'
 import AirBookingService from './AirBooking.service'
 import bookingService from './booking.service'
+import { Op } from 'sequelize'
 
 class TourService {
   public async getAll(pageAction: IPageAction) {
     const tours = tourRepository.query(pageAction)
     return tours
+  }
+
+  public async getByListId(ids: string[]) {
+    return tourRepository.query(undefined, {
+      id: {
+        [Op.in]: ids
+      }
+    })
   }
 
   public async create(tour: TourCreationAttributes) {

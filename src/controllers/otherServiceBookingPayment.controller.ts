@@ -1,7 +1,7 @@
-import { OSBookingPaymentCreationAttributes } from '@/models/otherServiceBookingPayment.model'
+import type { OSBookingPaymentCreationAttributes } from '@/models/otherServiceBookingPayment.model'
 import otherServiceBookingPaymentService from '@/services/otherServiceBookingPayment.service'
-import IResponseObject from '@/types/ResponseObject'
-import { Request, Response } from 'express'
+import type IResponseObject from '@/types/ResponseObject'
+import type { Request, Response } from 'express'
 
 class OtherServiceBookingPaymentController {
   public async getAll(

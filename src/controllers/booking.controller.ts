@@ -8,6 +8,7 @@ import type {
 } from 'express'
 import type { IBooking } from '@/models/booking.model'
 import Tour from '@/models/tour.model'
+import TourAgentSales from '@/models/tourAgentSales.model'
 
 export async function create(
   req: Request<unknown, unknown, IBooking>,
@@ -43,8 +44,22 @@ export async function getByTourId(
   next: NextFunction
 ): Promise<Response<IResponseObject<unknown>> | void> {
   try {
+    const saleId = req.user?.id
+    const { tourId } = req.params
+
+    const isExist = await TourAgentSales.findOne({
+      where: {
+        tourId,
+        saleId: saleId
+      }
+    })
+
+    if (!isExist) throw new ResponseError('forbidden', 403)
+
     const record = await Booking.findAll({
-      where: { tourId: req.params.tourId },
+      where: {
+        tourId: req.params.tourId
+      },
       include: [
         { model: Tour, as: 'tour' },
         { model: Account, as: 'client' },

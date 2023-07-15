@@ -8,27 +8,26 @@ import { authorize } from '@/middlewares/auth.middeware'
 import { validateBody } from '@/middlewares/validate.middleware'
 import type { IBooking } from '@/models/booking.model'
 import { validateBooking } from '@/utils/validations'
-import { Router } from 'express'
+import express from 'express'
 
-const router = Router()
+const router = express.Router()
+
+router.use(authorize(['Sys.Admin', 'Agent.Sales']))
 
 router.post(
   '/',
   validateBody<IBooking>(validateBooking),
-  authorize(['Sys.Admin']),
   create
 )
-router.get(
-  '/tour/:tourId',
-  authorize(['Sys.Admin']),
-  getByTourId
-)
+
+router.get('/tour/:tourId', getByTourId)
+
 router.patch(
   '/:id',
   validateBody<IBooking>(validateBooking),
-  authorize(['Sys.Admin']),
   update
 )
-router.delete('/:id', authorize(['Sys.Admin']), remove)
+
+router.delete('/:id', remove)
 
 export default router

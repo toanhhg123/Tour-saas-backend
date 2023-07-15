@@ -4,18 +4,19 @@ import type {
   IPageActionResponse
 } from '@/types/IPageAcction'
 import { initPageAction } from '@/types/IPageAcction'
+import type { WhereOptions } from 'sequelize'
 import { Op } from 'sequelize'
 
 class TourRepository {
   public async query(
-    fill?: IPageAction
+    fill?: IPageAction,
+    whereOp?: WhereOptions<Tour>
   ): Promise<IPageActionResponse<Tour[]>> {
     let { _search, _page, type, userId } =
       fill ?? initPageAction
 
-    const limit = 20
+    const limit = 10
     _page = _page ? Number(_page) : 1
-    console.log('page:::::', _page)
     _search = _search ?? ''
 
     const skip = (_page - 1) * limit
@@ -35,7 +36,8 @@ class TourRepository {
       where: {
         ...objSearch,
         ...objType,
-        ...objUserId
+        ...objUserId,
+        ...whereOp
       }
     })
 

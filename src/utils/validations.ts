@@ -16,6 +16,7 @@ import type { ICompany } from '@/models/company.model'
 import type { IBookingPayment } from '@/models/bookingPayment.model'
 import type { AirBookingCreationAttributes } from '@/models/airBooking.model'
 import type { OtherServiceCreationAttributes } from '@/models/otherService.model'
+import type { TourAgentSalesCreationAttributes } from '@/models/tourAgentSales.model'
 
 export const validateTourImage = (
   tourImage: ITourImage
@@ -238,6 +239,18 @@ export const validateSupplier = (data: ISupplier) => {
     name: joi.string().required(),
     address: joi.string().required()
   })
+
+  return schema.validate(data)
+}
+
+export const validateTourAgentSales = (
+  data: TourAgentSalesCreationAttributes
+) => {
+  const schema =
+    joi.object<TourAgentSalesCreationAttributes>({
+      tourId: joi.string().required(),
+      saleId: joi.string().required()
+    })
 
   return schema.validate(data)
 }

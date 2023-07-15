@@ -1,5 +1,5 @@
 import { VisaBooking } from '@/models'
-import { VisaBookingCreationAttributes } from '@/models/visaBooking.model'
+import type { VisaBookingCreationAttributes } from '@/models/visaBooking.model'
 
 class VisaBookingService {
   public async getByVisaGrId(visaGroupId: string) {

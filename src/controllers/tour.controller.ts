@@ -36,6 +36,28 @@ export async function getAll(
   return res.json(response)
 }
 
+export async function getByListId(
+  _req: Request<
+    unknown,
+    unknown,
+    unknown,
+    { ids: string[] }
+  >,
+  res: Response
+): Promise<Response<IResponseObject<unknown>> | void> {
+  const { ids } = _req.query
+  console.log({ ids })
+  const tours = await tourService.getByListId(ids)
+
+  const response: IResponseObject<typeof tours> = {
+    message: 'query success',
+    element: tours,
+    status: 'ok'
+  }
+
+  return res.json(response)
+}
+
 export async function getByCompanyId(
   req: Request<{ companyId: string }, unknown, Location>,
   res: Response,

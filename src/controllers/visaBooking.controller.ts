@@ -1,7 +1,7 @@
-import { Response, Request } from 'express'
-import IResponseObject from '@/types/ResponseObject'
+import type { Response, Request } from 'express'
+import type IResponseObject from '@/types/ResponseObject'
 import visaBookingService from '@/services/visaBooking.service'
-import { VisaBookingCreationAttributes } from '@/models/visaBooking.model'
+import type { VisaBookingCreationAttributes } from '@/models/visaBooking.model'
 
 class VisaBookingController {
   public async getByVisaGrId(

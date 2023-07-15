@@ -17,6 +17,7 @@ import otherServiceRoute from '@/routes/otherService.route'
 import otherServiceBookingRoute from '@/routes/otherServiceBooking.route'
 import otherServiceBookingPaymentRoute from '@/routes/otherServiceBookingPayment.route'
 import visaBookingRoute from '@/routes/visaBooking.route'
+import tourAgentSalesRoute from '@/routes/tourAgentSales.route'
 
 const useRoutes = async (app: Express): Promise<void> => {
   app.use('/api/v1/account', accountRoute)
@@ -39,6 +40,7 @@ const useRoutes = async (app: Express): Promise<void> => {
     otherServiceBookingPaymentRoute
   )
   app.use('/api/v1/visaBooking', visaBookingRoute)
+  app.use('/api/v1/TourAgentSales', tourAgentSalesRoute)
 
   app.use(notFound)
   app.use(handleError)

@@ -90,6 +90,14 @@ router.post(
 )
 
 router.post(
+  '/Agent-Sales',
+  validateBody(validateAccount),
+  authorize(['Oper.Sales', 'Sys.Admin']),
+  mapTypeRole('Agent.Sales'),
+  asyncHandler(create)
+)
+
+router.post(
   '/oper-tourMan',
   validateBody(validateAccount),
   authorize(['Oper.Mamnager', 'Sys.Admin']),

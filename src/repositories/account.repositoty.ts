@@ -6,6 +6,7 @@ import type {
 import { initPageAction } from '@/types/IPageAcction'
 import { Op } from 'sequelize'
 import { AccountStatus } from '@/models/account.model'
+
 class AccountRepository {
   public countUser = async (
     role: string
@@ -23,7 +24,7 @@ class AccountRepository {
   ): Promise<IPageActionResponse<Account[]>> {
     let { _search, _page } = fill ?? initPageAction
 
-    const limit = 20
+    const limit = 10
     _page = _page ?? 1
     _search = _search ?? ''
 

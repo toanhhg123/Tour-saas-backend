@@ -130,6 +130,22 @@ export async function create(
   })
   if (!role) throw new ResponseError('not found role')
 
+  const { phoneNumber, email } = req.body
+
+  const isPhoneNumberExist = await Account.findOne({
+    where: { phoneNumber }
+  })
+
+  if (isPhoneNumberExist)
+    throw new ResponseError('số điện thoại đã tồn tại', 409)
+
+  const isEmailExist = await Account.findOne({
+    where: { email }
+  })
+
+  if (isEmailExist)
+    throw new ResponseError('email đã tồn tại', 409)
+
   const record = await Account.create(
     {
       ...(req.body as Account),
@@ -141,9 +157,12 @@ export async function create(
     }
   )
 
-  const response: IResponseObject<Account> = {
+  const response: IResponseObject<any> = {
     message: 'query success',
-    element: record,
+    element: {
+      ...record.get(),
+      role
+    },
     status: 'ok'
   }
 

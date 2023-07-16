@@ -7,7 +7,10 @@ import type {
   Response
 } from 'express'
 import { ResponseError } from '../models/CustomError.model'
-import type { IAccount } from '../models/account.model'
+import type {
+  AccountCreationAttributes,
+  IAccount
+} from '../models/account.model'
 import { AccountStatus } from '../models/account.model'
 import { Op } from 'sequelize'
 import accountService from '@/services/account.service'
@@ -120,7 +123,7 @@ export async function create(
   req: Request<
     unknown,
     unknown,
-    IAccount,
+    AccountCreationAttributes,
     { typeRole: TypeRole }
   >,
   res: Response
@@ -130,31 +133,10 @@ export async function create(
   })
   if (!role) throw new ResponseError('not found role')
 
-  const { phoneNumber, email } = req.body
-
-  const isPhoneNumberExist = await Account.findOne({
-    where: { phoneNumber }
-  })
-
-  if (isPhoneNumberExist)
-    throw new ResponseError('số điện thoại đã tồn tại', 409)
-
-  const isEmailExist = await Account.findOne({
-    where: { email }
-  })
-
-  if (isEmailExist)
-    throw new ResponseError('email đã tồn tại', 409)
-
-  const record = await Account.create(
-    {
-      ...(req.body as Account),
-      roleId: role.id,
-      operatorId: req.user?.id
-    },
-    {
-      include: [{ model: Role, as: 'role' }]
-    }
+  const record = await accountService.create(
+    req.body,
+    role,
+    req.user?.id || ''
   )
 
   const response: IResponseObject<any> = {
@@ -269,13 +251,8 @@ export async function remove(
   req: Request<{ id: string }, unknown, IAccount>,
   res: Response
 ): Promise<Response<IResponseObject<unknown>> | void> {
-  const record = await Account.findByPk(req.params.id)
+  const record = await accountService.remove(req.params.id)
 
-  if (!record)
-    throw new ResponseError('not found user', 404)
-
-  record.status = AccountStatus.deleted
-  await record.save()
   const response: IResponseObject<Account> = {
     message: 'query success',
     element: record,

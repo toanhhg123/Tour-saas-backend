@@ -21,9 +21,10 @@ import type {
 import type IResponseObject from '../types/ResponseObject'
 import env from '@/config/env'
 import winstonLogger from '@/utils/logger.utils'
+import { AccountStatus } from '@/models/account.model'
 
 export async function getAllRole(
-  req: Request<unknown, unknown, Role>,
+  _req: Request<unknown, unknown, Role>,
   res: Response,
   next: NextFunction
 ): Promise<Response<IResponseObject<unknown>> | void> {
@@ -171,6 +172,14 @@ export async function login(
 
     if (!user)
       throw new ResponseError('email not found', 404)
+
+    const { status } = user
+
+    if (status === AccountStatus.deleted)
+      throw new ResponseError(
+        'Tài khoản của bạn đang bị khoá',
+        404
+      )
 
     if (
       !(await Account.validPassword(

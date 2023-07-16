@@ -5,10 +5,10 @@ import {
   getAll,
   getProfile,
   getByCompanyId,
-  update,
   getAccountsByRoles,
   searchEmail,
-  countUser
+  countUser,
+  remove
 } from '@/controllers/account.controller'
 import { validateAccount } from '@/utils/validations'
 import type {
@@ -114,54 +114,7 @@ router.post(
 )
 
 //patch
-router.patch(
-  '/sys-admin/:id',
-  validateBody(validateAccount),
-  authorize(['Sys.Admin']),
-  mapTypeRole('Sys.Admin'),
-  update
-)
 
-router.patch(
-  '/oper-admin/:id',
-  validateBody(validateAccount),
-  authorize(['Sys.Admin']),
-  mapTypeRole('Oper.Admin'),
-  update
-)
-
-router.patch(
-  '/oper-manager/:id',
-  validateBody(validateAccount),
-  authorize(['Sys.Admin', 'Sys.Admin']),
-  mapTypeRole('Oper.Mamnager'),
-  asyncHandler(update)
-)
-
-router.patch(
-  '/oper-sales/:id',
-  validateBody(validateAccount),
-  authorize(['Oper.Mamnager', 'Sys.Admin']),
-  mapTypeRole('Oper.Sales'),
-  asyncHandler(update)
-)
-
-router.patch(
-  '/oper-tourMan/:id',
-  validateBody(validateAccount),
-  authorize(['Oper.Mamnager', 'Sys.Admin']),
-  mapTypeRole('Oper.TourMan'),
-  asyncHandler(update)
-)
-
-router.patch(
-  '/client/:id',
-  validateBody(validateAccount),
-  authorize(['Client', 'Sys.Admin']),
-  mapTypeRole('Client'),
-  asyncHandler(update)
-)
-
-// router.delete('/:id', remove)
+router.delete('/:id', remove)
 
 export default router

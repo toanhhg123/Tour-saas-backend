@@ -7,23 +7,11 @@ import type {
   CreationOptional,
   ForeignKey,
   InferAttributes,
-  InferCreationAttributes
+  InferCreationAttributes,
+  Optional
 } from 'sequelize'
 import { DataTypes, Model } from 'sequelize'
 import type Company from './company.model'
-
-export interface IAccount {
-  fullName: string
-  password: string
-  phoneNumber: string
-  email: string
-  address: string | null
-  companyId?: string
-  roleId: string
-  status: AccountStatus
-  passport?: string
-  passportExp?: Date
-}
 
 export enum AccountStatus {
   acctive = 'active',
@@ -66,6 +54,13 @@ class Account extends Model<
   public createdAt!: CreationOptional<Date>
   public updatedAt!: CreationOptional<Date>
 }
+
+export type IAccount = InferAttributes<Account>
+
+export type AccountCreationAttributes = Optional<
+  Account,
+  'id' | 'createdAt' | 'updatedAt'
+>
 
 Account.init(
   {

@@ -54,7 +54,11 @@ export async function getByTourId(
       }
     })
 
-    if (!isExist) throw new ResponseError('forbidden', 403)
+    if (!isExist)
+      throw new ResponseError(
+        'bạn không có quyền để can thiệp vào phần này',
+        403
+      )
 
     const record = await Booking.findAll({
       where: {

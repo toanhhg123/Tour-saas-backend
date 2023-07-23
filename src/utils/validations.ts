@@ -152,10 +152,11 @@ export const validateBooking = (data: IBooking) => {
 
   return dataSchema.validate(data)
 }
+
 export const validateAccount = (data: IAccount) => {
   const dataSchema = joi.object<IAccount>({
     fullName: joi.string().required(),
-    password: joi.string().min(4).required(),
+    password: joi.string().min(4).optional(),
     phoneNumber: joi
       .string()
       .regex(/^[0-9]{10}$/)
@@ -171,21 +172,9 @@ export const validateAccount = (data: IAccount) => {
     companyId: joi.string().allow(null),
     passport: joi.string().optional(),
     passportExp: joi.date().optional(),
-    roleId: joi
-      .string()
-      .valid(
-        'Oper.Admin',
-        'Sys.Admin',
-        'Oper.Manager',
-        'Oper.TourMan',
-        'Oper.Sales',
-        'Oper.Visa',
-        'Oper.Acct',
-        'Oper.Guide',
-        'Agent.Sales',
-        'Agent.Admin',
-        'Client'
-      )
+    roleId: joi.string().required(),
+    operatorId: joi.string().optional(),
+    supplierId: joi.string().optional()
   })
 
   return dataSchema.validate(data)

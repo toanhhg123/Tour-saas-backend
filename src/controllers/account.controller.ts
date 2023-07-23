@@ -21,11 +21,14 @@ export async function getAll(
   res: Response
 ): Promise<Response<IResponseObject<unknown>> | void> {
   const { _page, _totalPage } = _req.query
-  const accounts = await accountService.getAll({
-    ..._req.query,
-    _page: Number(_page ?? 1),
-    _totalPage: Number(_totalPage ?? 1)
-  })
+  const accounts = await accountService.getAll(
+    {
+      ..._req.query,
+      _page: Number(_page ?? 1),
+      _totalPage: Number(_totalPage ?? 1)
+    },
+    _req.user?.id || ''
+  )
 
   const response: IResponseObject<typeof accounts> = {
     message: 'query success',
@@ -120,31 +123,17 @@ export async function searchEmail(
 }
 
 export async function create(
-  req: Request<
-    unknown,
-    unknown,
-    AccountCreationAttributes,
-    { typeRole: TypeRole }
-  >,
+  req: Request<unknown, unknown, AccountCreationAttributes>,
   res: Response
 ): Promise<Response<IResponseObject<unknown>> | void> {
-  const role = await Role.findOne({
-    where: { name: req.query.typeRole }
-  })
-  if (!role) throw new ResponseError('not found role')
-
   const record = await accountService.create(
     req.body,
-    role,
     req.user?.id || ''
   )
 
   const response: IResponseObject<any> = {
     message: 'query success',
-    element: {
-      ...record.get(),
-      role
-    },
+    element: record,
     status: 'ok'
   }
 
@@ -265,30 +254,26 @@ export async function update(
   req: Request<
     { id: string },
     unknown,
-    IAccount,
+    AccountCreationAttributes,
     { typeRole: TypeRole }
   >,
   res: Response
 ): Promise<Response<IResponseObject<unknown>> | void> {
-  const role = await Role.findOne({
-    where: { name: req.query.typeRole }
-  })
-  if (!role) throw new ResponseError('not found role')
+  const { id } = req.params
+  const body = req.body
+  const updateById = req.user?.id ?? ''
 
-  const [record] = await Account.update(
-    { ...req.body, roleId: role.id },
-    {
-      where: { id: req.params.id }
-    }
+  const record = await accountService.update(
+    body,
+    updateById,
+    id
   )
 
-  if (!record)
-    throw new ResponseError('not found user', 404)
-
-  const response: IResponseObject<number> = {
-    message: 'query success',
+  const response: IResponseObject<typeof record> = {
+    message: 'success',
     element: record,
     status: 'ok'
   }
+
   return res.json(response)
 }

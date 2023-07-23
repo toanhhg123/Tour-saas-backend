@@ -10,15 +10,12 @@ import helmet from 'helmet'
 import { client } from '@/config/db/redis.db'
 const useMiddlewares = async (app: Express) => {
   await ConnectRedis()
-
   app.use(
     cors({
       credentials: true,
-
       origin: ['http://localhost:3000']
     })
   )
-
   app.use(helmet())
   app.use(
     session({

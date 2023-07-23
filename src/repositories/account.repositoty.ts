@@ -4,7 +4,11 @@ import type {
   IPageActionResponse
 } from '@/types/IPageAcction'
 import { initPageAction } from '@/types/IPageAcction'
-import { Op } from 'sequelize'
+import {
+  InferAttributes,
+  Op,
+  WhereOptions
+} from 'sequelize'
 import { AccountStatus } from '@/models/account.model'
 
 class AccountRepository {
@@ -20,7 +24,15 @@ class AccountRepository {
   }
 
   public async query(
-    fill?: IPageAction
+    fill?: IPageAction,
+    whereOp?: WhereOptions<
+      InferAttributes<
+        Account,
+        {
+          omit: never
+        }
+      >
+    >
   ): Promise<IPageActionResponse<Account[]>> {
     let { _search, _page } = fill ?? initPageAction
 
@@ -39,7 +51,8 @@ class AccountRepository {
       offset: skip,
       where: {
         ...objSearch,
-        status: AccountStatus.acctive
+        status: AccountStatus.acctive,
+        ...whereOp
       },
       include: [{ model: Role, as: 'role' }]
     })

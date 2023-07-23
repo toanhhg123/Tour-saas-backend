@@ -11,7 +11,7 @@ export const validateBody = <T>(
 ) => {
   const middleware = (
     req: Request,
-    res: Response,
+    _: Response,
     next: NextFunction
   ) => {
     const valid = validate(req.body)

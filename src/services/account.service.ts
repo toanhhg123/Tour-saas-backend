@@ -6,6 +6,7 @@ import {
   AccountStatus
 } from '@/models/account.model'
 import { ResponseError } from '@/models/CustomError.model'
+import { TypeRole } from '@/types/IAuthType'
 
 export class AccountService {
   //------------count-----------------//
@@ -15,15 +16,50 @@ export class AccountService {
 
   //---- getall-----//
 
-  public async getAll(fill?: IPageAction) {
-    return accountRepositoty.query(fill)
+  public async getAll(
+    fill?: IPageAction,
+    operatorId?: string
+  ) {
+    return accountRepositoty.query(fill, {
+      operatorId: operatorId
+    })
   }
 
   public async create(
     body: AccountCreationAttributes,
-    role: Role,
     operatorId: string
   ) {
+    const { roleId } = body
+
+    const [roleUser, myAccount] = await Promise.all([
+      Role.findByPk(roleId),
+      Account.findByPk(operatorId, {
+        include: { model: Role, as: 'role' }
+      })
+    ])
+
+    if (!roleUser)
+      throw new ResponseError(
+        'không tìm thấy quyền người dùng'
+      )
+
+    const myRoleName = myAccount?.role?.name
+
+    if (!myRoleName)
+      throw new ResponseError(
+        'quyền hạn của bạn không dược tìm thấy'
+      )
+
+    if (
+      !this.mapAccessRole(myRoleName).some(
+        (x) => x === roleUser.name
+      )
+    )
+      throw new ResponseError(
+        'bạn không có quền hạn để tạo user này',
+        403
+      )
+
     const { phoneNumber, email } = body
 
     const isPhoneNumberExist = await Account.findOne({
@@ -43,16 +79,71 @@ export class AccountService {
     if (isEmailExist)
       throw new ResponseError('email đã tồn tại', 409)
 
-    return await Account.create(
-      {
-        ...(body as Account),
-        roleId: role.id,
-        operatorId: operatorId
-      },
-      {
-        include: [{ model: Role, as: 'role' }]
-      }
-    )
+    const newAccount = await Account.create({
+      ...(body as Account),
+      operatorId: operatorId
+    })
+
+    return {
+      ...newAccount.get(),
+      role: roleUser
+    }
+  }
+
+  public async update(
+    body: AccountCreationAttributes,
+    updateById: string,
+    id: string
+  ) {
+    const [myAccount, accountUpdate] = await Promise.all([
+      Account.findByPk(updateById, {
+        include: { model: Role, as: 'role' }
+      }),
+
+      Account.findByPk(id, {
+        include: { model: Role, as: 'role' }
+      })
+    ])
+
+    if (!myAccount || !accountUpdate || !myAccount.role)
+      throw new ResponseError(
+        'Không tìm thấy tài khoản update'
+      )
+
+    const { operatorId } = accountUpdate
+
+    if (![operatorId, id].includes(updateById)) {
+      throw new ResponseError(
+        'Bạn không có quyền chỉnh sửa tài khoản này',
+        403
+      )
+    }
+
+    const { roleId: roleUpdateId } = body
+    const { role } = myAccount
+
+    if (roleUpdateId !== accountUpdate.roleId) {
+      const roleUpdate = await Role.findByPk(roleUpdateId)
+
+      if (!roleUpdate)
+        throw new ResponseError(
+          'không tìm thấy nhóm quyền cập nhật'
+        )
+
+      if (
+        !this.mapAccessRole(role.name).some(
+          (x) => x === roleUpdate.name
+        )
+      )
+        throw new ResponseError(
+          'bạn không có quền hạn để chỉnh sửa quyền user này',
+          403
+        )
+    }
+
+    return await accountUpdate.update({
+      ...body
+    })
   }
 
   public async remove(id: string) {
@@ -63,6 +154,43 @@ export class AccountService {
 
     record.status = AccountStatus.deleted
     return await record.save()
+  }
+
+  /// method sp
+  private mapAccessRole = (
+    roleName: TypeRole
+  ): TypeRole[] => {
+    type RecordType = Record<TypeRole, TypeRole[]>
+
+    const allRole: TypeRole[] = [
+      'Oper.Admin',
+      'Sys.Admin',
+      'Oper.Mamnager',
+      'Oper.TourMan',
+      'Oper.Sales',
+      'Oper.Visa',
+      'Oper.Acct',
+      'Oper.Guide',
+      'Agent.Sales',
+      'Agent.Admin',
+      'Client'
+    ]
+
+    const recordType: RecordType = {
+      'Oper.Admin': [],
+      'Sys.Admin': [...allRole],
+      'Oper.Mamnager': [],
+      'Oper.TourMan': [],
+      'Oper.Sales': [],
+      'Oper.Visa': [],
+      'Oper.Acct': [],
+      'Oper.Guide': [],
+      'Agent.Sales': ['Client'],
+      'Agent.Admin': ['Agent.Sales'],
+      Client: []
+    }
+
+    return recordType[roleName]
   }
 }
 

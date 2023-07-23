@@ -92,6 +92,16 @@ Tour.hasMany(AirBooking, {
   foreignKey: 'tourId'
 })
 
+Tour.hasMany(TourAgentSales, {
+  as: 'tourAgentSales',
+  foreignKey: 'tourId'
+})
+
+Tour.hasMany(Booking, {
+  as: 'bookings',
+  foreignKey: 'tourId'
+})
+
 // tourservice
 TourService.belongsTo(Supplier, {
   as: 'supplier',
@@ -114,6 +124,7 @@ Booking.belongsTo(Tour, {
   as: 'tour',
   foreignKey: 'tourId'
 })
+
 Booking.belongsTo(Account, {
   as: 'sale',
   foreignKey: 'saleId'

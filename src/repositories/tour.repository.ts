@@ -15,7 +15,7 @@ class TourRepository {
     let { _search, _page, type, userId } =
       fill ?? initPageAction
 
-    const limit = 10
+    const limit = 2
     _page = _page ? Number(_page) : 1
     _search = _search ?? ''
 
@@ -27,7 +27,15 @@ class TourRepository {
 
     if (_search)
       objSearch = { name: { [Op.like]: `%${_search}%` } }
-    if (type) objType = { type: type }
+
+    if (type)
+      objType = {
+        type: {
+          [Op.in]: !Array.isArray(type) ? [type] : [...type]
+        }
+      }
+
+    console.log(objType)
     if (userId) objUserId = { tourManId: userId }
 
     const { rows, count } = await Tour.findAndCountAll({

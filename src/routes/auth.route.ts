@@ -19,7 +19,7 @@ const router = Router()
 
 // router.get('/:id', findOne)
 
-router.get('/roles', getAllRole)
+router.get('/roles', authorize(), getAllRole)
 router.get('/role/:id', finOneRole)
 
 router.post('/refreshToken', refreshToken)

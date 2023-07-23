@@ -8,30 +8,20 @@ import {
   getAccountsByRoles,
   searchEmail,
   countUser,
-  remove
+  remove,
+  update
 } from '@/controllers/account.controller'
 import { validateAccount } from '@/utils/validations'
-import type {
-  NextFunction,
-  Request,
-  Response
-} from 'express'
 import { Router } from 'express'
 import { validateBody } from '../middlewares/validate.middleware'
-import type { TypeRole } from '@/types/IAuthType'
 import { authorize } from '@/middlewares/auth.middeware'
 import { asyncHandler } from '@/middlewares/error.middleware'
 const router = Router()
 
-const mapTypeRole =
-  (typeRole: TypeRole) =>
-  (req: Request, _res: Response, next: NextFunction) => {
-    req.query.typeRole = typeRole
-    next()
-  }
-
 router.get('/search', asyncHandler(searchEmail))
+
 router.get('/role', asyncHandler(getAccountsByRoles))
+
 router.get('/count', asyncHandler(countUser))
 
 router.get(
@@ -39,11 +29,13 @@ router.get(
   authorize(),
   asyncHandler(getProfile)
 )
+
 router.get(
   '/findOne',
   authorize(),
   asyncHandler(findeByIdAndEmail)
 )
+
 router.get(
   '/company/:companyid',
   authorize(),
@@ -51,69 +43,24 @@ router.get(
 )
 
 router.get('/:id', findOne)
-router.get(
+
+router.get('/', authorize(), asyncHandler(getAll))
+
+router.post(
   '/',
-  authorize(['Sys.Admin']),
-  asyncHandler(getAll)
-)
-
-router.post(
-  '/sys-admin',
   validateBody(validateAccount),
-  authorize(['Sys.Admin']),
-  mapTypeRole('Sys.Admin'),
-  asyncHandler(create)
-)
-
-router.post(
-  '/oper-admin',
-  validateBody(validateAccount),
-  authorize(['Sys.Admin']),
-  mapTypeRole('Oper.Admin'),
-  asyncHandler(create)
-)
-
-router.post(
-  '/oper-manager',
-  validateBody(validateAccount),
-  authorize(['Sys.Admin', 'Sys.Admin']),
-  mapTypeRole('Oper.Mamnager'),
-  asyncHandler(create)
-)
-
-router.post(
-  '/oper-sales',
-  validateBody(validateAccount),
-  authorize(['Oper.Mamnager', 'Sys.Admin']),
-  mapTypeRole('Oper.Sales'),
-  asyncHandler(create)
-)
-
-router.post(
-  '/Agent-Sales',
-  validateBody(validateAccount),
-  authorize(['Oper.Sales', 'Sys.Admin']),
-  mapTypeRole('Agent.Sales'),
-  asyncHandler(create)
-)
-
-router.post(
-  '/oper-tourMan',
-  validateBody(validateAccount),
-  authorize(['Oper.Mamnager', 'Sys.Admin']),
-  mapTypeRole('Oper.TourMan'),
-  asyncHandler(create)
-)
-
-router.post(
-  '/client',
-  validateBody(validateAccount),
-  authorize(['Client', 'Sys.Admin']),
-  mapTypeRole('Client'),
+  authorize(),
   asyncHandler(create)
 )
 
 //patch
+
+router.patch(
+  '/:id',
+  validateBody(validateAccount),
+  authorize(),
+  asyncHandler(update)
+)
 
 router.delete('/:id', remove)
 

@@ -1,5 +1,6 @@
 import {
   Account,
+  Booking,
   Role,
   Supplier,
   TourService
@@ -8,6 +9,7 @@ import { ResponseError } from '@/models/CustomError.model'
 import AirBooking from '@/models/airBooking.model'
 import type { ITour } from '@/models/tour.model'
 import Tour from '@/models/tour.model'
+import TourAgentSales from '@/models/tourAgentSales.model'
 import tourService from '@/services/tour.service'
 import type { IPageAction } from '@/types/IPageAcction'
 import type IResponseObject from '@/types/ResponseObject'
@@ -149,20 +151,19 @@ export async function findOne(
       include: [
         {
           model: Account,
-          as: 'tourMan',
-          include: [{ model: Role, as: 'role' }]
+          as: 'tourMan'
         },
         {
           model: Account,
-          as: 'tourGuide',
-          include: [{ model: Role, as: 'role' }]
+          as: 'tourGuide'
         },
         {
           model: TourService,
-          as: 'tourServices',
-          include: [{ model: Supplier, as: 'supplier' }]
+          as: 'tourServices'
         },
-        { model: AirBooking, as: 'airBookings' }
+        { model: AirBooking, as: 'airBookings' },
+        { model: TourAgentSales, as: 'tourAgentSales' },
+        { model: Booking, as: 'bookings' }
       ]
     })
 

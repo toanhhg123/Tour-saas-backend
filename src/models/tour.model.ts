@@ -30,12 +30,15 @@ export type TourCreationAttributes = Optional<
 >
 
 export const STRING_CONCAT = '<<--->>'
+
 class Tour extends Model<
   InferAttributes<Tour>,
   InferCreationAttributes<Tour>
 > {
   declare id: CreationOptional<string>
+
   declare name: string
+
   declare desc?: string
 
   declare transport: string

@@ -36,9 +36,7 @@ class Tour extends Model<
   InferCreationAttributes<Tour>
 > {
   declare id: CreationOptional<string>
-
   declare name: string
-
   declare desc?: string
 
   declare transport: string
@@ -76,6 +74,7 @@ class Tour extends Model<
   declare getAirBookings: HasManyGetAssociationsMixin<AirBooking>
   declare toursImages?: NonAttribute<TourImage[]>
   declare tourServices?: NonAttribute<TourService[]>
+  declare airBookings?: NonAttribute<AirBooking[]>
 
   declare static associations: {
     tourImages: Association<Tour, TourImage>

@@ -1,31 +1,37 @@
 import {
   create,
   getAll,
-  update
+  update,
+  getSupplierByOperator
 } from '@/controllers/supplier.controller'
 import { authorize } from '@/middlewares/auth.middeware'
 import { validateBody } from '@/middlewares/validate.middleware'
-import type { ISupplier } from '@/models/supplier.model'
 import { validateSupplier } from '@/utils/validations'
 import { Router } from 'express'
+
 const router = Router()
+
+router.get(
+  '/oper',
+  authorize(['Oper.Sales']),
+  getSupplierByOperator
+)
 
 router.get('/', getAll)
 
 router.post(
   '/',
-  authorize(['Sys.Admin']),
-  validateBody<ISupplier>(validateSupplier),
+  authorize(['Oper.Sales']),
+  validateBody(validateSupplier),
   create
 )
+
 router.patch(
   '/:id',
-  authorize(['Sys.Admin']),
-  validateBody<ISupplier>(validateSupplier),
+  authorize(['Oper.Sales']),
+  validateBody(validateSupplier),
   update
 )
-
-// router.patch('/:id', update)
 
 // router.delete('/:id', remove)
 

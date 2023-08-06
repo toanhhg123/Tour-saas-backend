@@ -15,7 +15,7 @@ class TourRepository {
     let { _search, _page, type, userId } =
       fill ?? initPageAction
 
-    const limit = 2
+    const limit = 6
     _page = _page ? Number(_page) : 1
     _search = _search ?? ''
 
@@ -35,7 +35,6 @@ class TourRepository {
         }
       }
 
-    console.log(objType)
     if (userId) objUserId = { tourManId: userId }
 
     const { rows, count } = await Tour.findAndCountAll({

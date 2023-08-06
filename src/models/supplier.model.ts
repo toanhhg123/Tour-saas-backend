@@ -4,19 +4,11 @@ import type {
   CreationOptional,
   ForeignKey,
   InferAttributes,
-  InferCreationAttributes
+  InferCreationAttributes,
+  Optional
 } from 'sequelize'
 import { DataTypes, Model } from 'sequelize'
 import type Account from './account.model'
-
-export interface ISupplier {
-  id: string
-  name: string
-  address: string
-  phone: string
-  isDeleted: boolean
-  email: string
-}
 
 class Supplier extends Model<
   InferAttributes<Supplier>,
@@ -33,6 +25,13 @@ class Supplier extends Model<
   public createdAt!: CreationOptional<Date>
   public updatedAt!: CreationOptional<Date>
 }
+
+export type ISupplier = InferAttributes<Supplier>
+
+export type SupplierCreationAttributes = Optional<
+  Supplier,
+  'id' | 'createdAt' | 'updatedAt'
+>
 
 Supplier.init(
   {

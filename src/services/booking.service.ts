@@ -1,7 +1,25 @@
-import { Booking, BookingPayment } from '@/models'
+import {
+  Account,
+  Booking,
+  BookingPayment,
+  Tour
+} from '@/models'
 import bookingPaymentService from './bookingPayment.service'
+import { ResponseError } from '@/models/CustomError.model'
 
 class BookingService {
+  private async checkRoleTourMan(
+    tourManId: string,
+    tourId: string
+  ) {
+    const tour = await Tour.findOne({
+      where: { tourManId: tourManId, id: tourId }
+    })
+
+    if (!tour) throw new ResponseError('forbidden', 403)
+    return true
+  }
+
   public async remove(id: string) {
     await BookingPayment.destroy({
       where: { bookingId: id }
@@ -9,6 +27,38 @@ class BookingService {
 
     return await Booking.destroy({
       where: { id }
+    })
+  }
+
+  public async getBookingsByTourManId(
+    tourManId: string,
+    tourId: string
+  ) {
+    await this.checkRoleTourMan(tourManId, tourId)
+
+    return Booking.findAll({
+      where: { tourId }
+    })
+  }
+
+  async getSalesBookingByTourMan(params: {
+    tourId: string
+    saleId: string
+    tourManId: string
+  }) {
+    const { tourId, saleId, tourManId } = params
+    await this.checkRoleTourMan(tourManId, tourId)
+
+    return Booking.findAll({
+      where: {
+        tourId,
+        saleId
+      },
+      include: [
+        { model: Account, as: 'client' },
+        { model: Account, as: 'sale' },
+        { model: BookingPayment, as: 'bookingPayments' }
+      ]
     })
   }
 

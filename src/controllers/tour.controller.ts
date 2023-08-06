@@ -1,15 +1,10 @@
-import {
-  Account,
-  Booking,
-  Role,
-  Supplier,
-  TourService
-} from '@/models'
+import { Account, Booking, TourService } from '@/models'
 import { ResponseError } from '@/models/CustomError.model'
 import AirBooking from '@/models/airBooking.model'
 import type { ITour } from '@/models/tour.model'
 import Tour from '@/models/tour.model'
 import TourAgentSales from '@/models/tourAgentSales.model'
+import accountService from '@/services/account.service'
 import tourService from '@/services/tour.service'
 import type { IPageAction } from '@/types/IPageAcction'
 import type IResponseObject from '@/types/ResponseObject'
@@ -23,7 +18,6 @@ export async function getAll(
   _req: Request<unknown, unknown, unknown, IPageAction>,
   res: Response
 ): Promise<Response<IResponseObject<unknown>> | void> {
-  console.log(_req.query)
   const tours = await tourService.getAll({
     ..._req.query,
     userId: _req.user?.id
@@ -50,6 +44,41 @@ export async function getByListId(
   const { ids } = _req.query
   console.log({ ids })
   const tours = await tourService.getByListId(ids)
+
+  const response: IResponseObject<typeof tours> = {
+    message: 'query success',
+    element: tours,
+    status: 'ok'
+  }
+
+  return res.json(response)
+}
+
+export async function getToursByManager(
+  _req: Request<
+    unknown,
+    unknown,
+    unknown,
+    { pageActions: IPageAction }
+  >,
+  res: Response
+): Promise<Response<IResponseObject<unknown>> | void> {
+  const { id } = _req.user
+
+  const tourMans =
+    await accountService.getAllAccountWithOperIdAndRole(
+      id,
+      'Oper.TourMan',
+      ['id']
+    )
+
+  const ids = tourMans.map((x) => x.id)
+  console.log(ids)
+
+  const tours = await tourService.getByListTourManId(
+    ids,
+    _req.query.pageActions
+  )
 
   const response: IResponseObject<typeof tours> = {
     message: 'query success',
@@ -125,10 +154,12 @@ export async function create(
 ): Promise<Response<IResponseObject<unknown>> | void> {
   try {
     const tour = new Tour({
-      ...req.body
+      ...req.body,
+      tourManId: req.user?.id || ''
     })
 
     await tour.save()
+
     const response: IResponseObject<Tour> = {
       message: 'query success',
       element: tour,

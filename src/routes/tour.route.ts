@@ -5,7 +5,8 @@ import {
   update,
   getTourByManager,
   remove,
-  getByListId
+  getByListId,
+  getToursByManager
 } from '@/controllers/tour.controller'
 import { authorize } from '@/middlewares/auth.middeware'
 import { asyncHandler } from '@/middlewares/error.middleware'
@@ -13,12 +14,26 @@ import { validateBody } from '@/middlewares/validate.middleware'
 import type { ITour } from '@/models/tour.model'
 import { validateTour } from '@/utils/validations'
 import { Router } from 'express'
+
 const router = Router()
 
-router.get('/listid', asyncHandler(getByListId))
-router.get('/:id', findOne)
-router.get('/', authorize(), asyncHandler(getAll))
 router.get('/withTourMan', getTourByManager)
+
+router.get(
+  '/withOperManager',
+  authorize(['Oper.Mamnager']),
+  asyncHandler(getToursByManager)
+)
+
+router.get('/listid', asyncHandler(getByListId))
+
+router.get(
+  '/:id',
+  authorize(['Oper.TourMan', 'Oper.Mamnager']),
+  findOne
+)
+
+router.get('/', authorize(), asyncHandler(getAll))
 router.post(
   '/',
   authorize(['Sys.Admin', 'Oper.Mamnager']),

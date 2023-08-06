@@ -1,22 +1,24 @@
 import type { IAccount } from '@/models/account.model'
 import { AccountStatus } from '@/models/account.model'
-import { type IPermission } from '@/models/permission.model'
-import type { IRole } from '@/models/role.model'
-import type { ITour } from '@/models/tour.model'
-import { type ITourImage } from '@/models/tourImage.model'
-import { type ITourService } from '@/models/tourService.model'
-import joi from 'joi'
-import type { IAuthRequest } from '../types/IAuthType'
-import { TourType } from '@/models/tour.model'
-import { TypeTour } from '@/models/tourService.model'
-import type { ISupplier } from '@/models/supplier.model'
+import type { AirBookingCreationAttributes } from '@/models/airBooking.model'
 import type { IBooking } from '@/models/booking.model'
 import { StatusBooking } from '@/models/booking.model'
-import type { ICompany } from '@/models/company.model'
 import type { IBookingPayment } from '@/models/bookingPayment.model'
-import type { AirBookingCreationAttributes } from '@/models/airBooking.model'
+import type { ICompany } from '@/models/company.model'
 import type { OtherServiceCreationAttributes } from '@/models/otherService.model'
+import { type IPermission } from '@/models/permission.model'
+import type { IRole } from '@/models/role.model'
+import type { SupplierCreationAttributes } from '@/models/supplier.model'
+import type { ITour } from '@/models/tour.model'
+import { TourType } from '@/models/tour.model'
 import type { TourAgentSalesCreationAttributes } from '@/models/tourAgentSales.model'
+import { type ITourImage } from '@/models/tourImage.model'
+import {
+  TypeTour,
+  type ITourService
+} from '@/models/tourService.model'
+import joi from 'joi'
+import type { IAuthRequest } from '../types/IAuthType'
 
 export const validateTourImage = (
   tourImage: ITourImage
@@ -215,16 +217,12 @@ export const validateAuthRequest = (data: IAuthRequest) => {
   return schema.validate(data)
 }
 
-export const validateSupplier = (data: ISupplier) => {
-  const schema = joi.object<ISupplier>({
+export const validateSupplier = (
+  data: SupplierCreationAttributes
+) => {
+  const schema = joi.object<SupplierCreationAttributes>({
     email: joi.string().email().required(),
-    phone: joi
-      .string()
-      .regex(/^[0-9]{10}$/)
-      .messages({
-        'string.pattern.base': `Phone number must have 10 digits.`
-      })
-      .required(),
+    phone: joi.string().required(),
     name: joi.string().required(),
     address: joi.string().required()
   })

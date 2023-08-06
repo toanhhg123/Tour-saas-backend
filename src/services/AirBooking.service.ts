@@ -55,7 +55,6 @@ export class AirBookingService extends Singleton {
     const airBooking = await AirBooking.findOne({
       where: { tourId }
     })
-
     if (airBooking) {
       const { id } = airBooking
       await airBookingPaymentService.removeByAriBookingId(

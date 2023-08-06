@@ -21,6 +21,17 @@ class TourService {
     })
   }
 
+  public async getByListTourManId(
+    ids: string[],
+    pageAction?: IPageAction
+  ) {
+    return tourRepository.query(pageAction, {
+      tourManId: {
+        [Op.in]: ids
+      }
+    })
+  }
+
   public async create(tour: TourCreationAttributes) {
     const record = await Tour.create(tour)
     return record

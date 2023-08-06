@@ -16,7 +16,8 @@ router.use(
     'Oper.TourMan',
     'Sys.Admin',
     'Agent.Sales',
-    'Oper.Sales'
+    'Oper.Sales',
+    'Oper.Mamnager'
   ])
 )
 

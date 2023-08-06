@@ -42,7 +42,7 @@ router.get(
   asyncHandler(getByCompanyId)
 )
 
-router.get('/:id', findOne)
+router.get('/:id', asyncHandler(findOne))
 
 router.get('/', authorize(), asyncHandler(getAll))
 
@@ -62,6 +62,6 @@ router.patch(
   asyncHandler(update)
 )
 
-router.delete('/:id', remove)
+router.delete('/:id', asyncHandler(remove))
 
 export default router

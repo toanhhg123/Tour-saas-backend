@@ -9,6 +9,7 @@ import type {
 import type { IBooking } from '@/models/booking.model'
 import Tour from '@/models/tour.model'
 import TourAgentSales from '@/models/tourAgentSales.model'
+import bookingService from '@/services/booking.service'
 
 export async function create(
   req: Request<unknown, unknown, IBooking>,
@@ -82,6 +83,51 @@ export async function getByTourId(
   } catch (error) {
     next(error)
   }
+}
+
+export async function getBookingSalesWithTourMan(
+  req: Request<{ tourId: string; saleId: string }>,
+  res: Response
+): Promise<Response<IResponseObject<unknown>> | void> {
+  const tourManId = req.user?.id ?? ''
+  const { tourId, saleId } = req.params
+
+  const record =
+    await bookingService.getSalesBookingByTourMan({
+      tourId,
+      saleId,
+      tourManId
+    })
+
+  const response: IResponseObject<typeof record> = {
+    message: 'query success',
+    element: record,
+    status: 'ok'
+  }
+
+  return res.json(response)
+}
+
+export async function getByTourMan(
+  req: Request<{ tourId: string }>,
+  res: Response
+) {
+  const userId = req.user?.id ?? ''
+  const { tourId } = req.params
+
+  const record =
+    await bookingService.getBookingsByTourManId(
+      userId,
+      tourId
+    )
+
+  const response: IResponseObject<typeof record> = {
+    message: 'query success',
+    element: record,
+    status: 'ok'
+  }
+
+  return res.json(response)
 }
 
 export async function update(

@@ -6,7 +6,7 @@ declare global {
   namespace Express {
     interface Request {
       bodyValid?: Joi.ValidationResult<unknown>
-      user?: IUserJwt
+      user: IUserJwt
     }
   }
 }

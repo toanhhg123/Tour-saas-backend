@@ -1,12 +1,10 @@
-import accountRepositoty from '@/repositories/account.repositoty'
-import type { IPageAction } from '@/types/IPageAcction'
 import { Account, Role } from '@/models'
-import {
-  AccountCreationAttributes,
-  AccountStatus
-} from '@/models/account.model'
 import { ResponseError } from '@/models/CustomError.model'
-import { TypeRole } from '@/types/IAuthType'
+import type { AccountCreationAttributes } from '@/models/account.model'
+import { AccountStatus } from '@/models/account.model'
+import accountRepositoty from '@/repositories/account.repositoty'
+import type { TypeRole } from '@/types/IAuthType'
+import type { IPageAction } from '@/types/IPageAcction'
 
 export class AccountService {
   //------------count-----------------//
@@ -146,6 +144,24 @@ export class AccountService {
     })
   }
 
+  public async getAllAccountWithOperIdAndRole(
+    operId: string,
+    role: TypeRole,
+    attributes: string[]
+  ) {
+    return Account.findAll({
+      where: { operatorId: operId },
+      include: [
+        {
+          model: Role,
+          as: 'role',
+          where: { name: role }
+        }
+      ],
+      attributes
+    })
+  }
+
   public async remove(id: string) {
     const record = await Account.findByPk(id)
 
@@ -177,20 +193,38 @@ export class AccountService {
     ]
 
     const recordType: RecordType = {
-      'Oper.Admin': [],
+      'Oper.Admin': [
+        'Oper.Mamnager',
+        'Oper.Visa',
+        'Oper.Acct',
+        'Oper.Sales'
+      ],
       'Sys.Admin': [...allRole],
-      'Oper.Mamnager': [],
+      'Oper.Mamnager': [
+        'Oper.TourMan',
+        'Oper.Sales',
+        'Oper.Visa'
+      ],
       'Oper.TourMan': [],
-      'Oper.Sales': [],
+      'Oper.Sales': ['Agent.Sales', 'Agent.Admin'],
       'Oper.Visa': [],
       'Oper.Acct': [],
-      'Oper.Guide': [],
+      'Oper.Guide': ['Client'],
       'Agent.Sales': ['Client'],
       'Agent.Admin': ['Agent.Sales'],
       Client: []
     }
 
     return recordType[roleName]
+  }
+
+  public async checkOper(operId: string, userId: string) {
+    const user = await Account.findByPk(userId)
+
+    if (operId !== user?.operatorId)
+      throw new ResponseError('forbidden', 403)
+
+    return true
   }
 }
 

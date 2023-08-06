@@ -4,11 +4,11 @@ import type {
   IPageActionResponse
 } from '@/types/IPageAcction'
 import { initPageAction } from '@/types/IPageAcction'
-import {
+import type {
   InferAttributes,
-  Op,
   WhereOptions
 } from 'sequelize'
+import { Op } from 'sequelize'
 import { AccountStatus } from '@/models/account.model'
 
 class AccountRepository {
@@ -54,7 +54,10 @@ class AccountRepository {
         status: AccountStatus.acctive,
         ...whereOp
       },
-      include: [{ model: Role, as: 'role' }]
+      include: [{ model: Role, as: 'role' }],
+      attributes: {
+        exclude: ['password']
+      }
     })
     return {
       _search,

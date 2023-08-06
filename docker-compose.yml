@@ -1,4 +1,4 @@
-version: 3
+version: '3.8'
 
 services:
   mysql:
@@ -30,9 +30,6 @@ services:
       - '8000:8080'
     networks:
       - saas-net-work
-    depends_on:
-      - mysql
-      - redis
 
 networks:
   saas-net-work:

@@ -19,6 +19,7 @@ import OtherServiceBooking from './otherServiceBooking.model'
 import OtherServiceBookingPayment from './otherServiceBookingPayment.model'
 import VisaBooking from './visaBooking.model'
 import TourAgentSales from './tourAgentSales.model'
+import TourOperSales from './TourOperSales.model'
 
 // roles
 Permissions.belongsTo(Role, {
@@ -211,6 +212,16 @@ TourAgentSales.belongsTo(Tour, {
   foreignKey: 'tourId'
 })
 
+TourOperSales.belongsTo(Account, {
+  as: 'operSales',
+  foreignKey: 'operSaleId'
+})
+
+TourOperSales.belongsTo(Tour, {
+  as: 'tour',
+  foreignKey: 'tourId'
+})
+
 // //init Entity
 // sequelize
 //   .sync({ force: true })
@@ -325,5 +336,6 @@ export {
   OtherServiceBookingPayment,
   VisaBooking,
   OtherServiceBooking,
-  OtherService
+  OtherService,
+  TourOperSales
 }

@@ -89,14 +89,14 @@ export async function getBookingSalesWithTourMan(
   req: Request<{ tourId: string; saleId: string }>,
   res: Response
 ): Promise<Response<IResponseObject<unknown>> | void> {
-  const tourManId = req.user?.id ?? ''
+  const tourManId = req.user.id
   const { tourId, saleId } = req.params
 
   const record =
     await bookingService.getSalesBookingByTourMan({
       tourId,
       saleId,
-      tourManId
+      userId: tourManId
     })
 
   const response: IResponseObject<typeof record> = {

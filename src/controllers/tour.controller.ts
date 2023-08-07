@@ -6,7 +6,10 @@ import Tour from '@/models/tour.model'
 import TourAgentSales from '@/models/tourAgentSales.model'
 import accountService from '@/services/account.service'
 import tourService from '@/services/tour.service'
-import type { IPageAction } from '@/types/IPageAcction'
+import type {
+  IPageAction,
+  IPageActionResponse
+} from '@/types/IPageAcction'
 import type IResponseObject from '@/types/ResponseObject'
 import type {
   Request,
@@ -18,10 +21,61 @@ export async function getAll(
   _req: Request<unknown, unknown, unknown, IPageAction>,
   res: Response
 ): Promise<Response<IResponseObject<unknown>> | void> {
-  const tours = await tourService.getAll({
-    ..._req.query,
-    userId: _req.user?.id
-  })
+  const { id } = _req.user
+
+  const user = await accountService.findAccountById(id)
+  const roleName = user.role?.name
+
+  let tours: IPageActionResponse<Tour[]> = {
+    data: []
+  }
+
+  switch (roleName) {
+    case 'Oper.TourMan': {
+      tours = await tourService.getAll({
+        ..._req.query,
+        userId: id
+      })
+
+      break
+    }
+
+    case 'Oper.Mamnager': {
+      const tourMans =
+        await accountService.getAllAccountWithOperIdAndRole(
+          id,
+          'Oper.TourMan',
+          ['id']
+        )
+
+      const ids = tourMans.map((x) => x.id)
+
+      tours = await tourService.getByListTourManId(
+        ids,
+        _req.query
+      )
+
+      break
+    }
+
+    case 'Oper.Sales': {
+      const tourMans =
+        await accountService.getAllAccountWithOperIdAndRole(
+          user.operatorId,
+          'Oper.TourMan',
+          ['id']
+        )
+
+      const ids = tourMans.map((x) => x.id)
+
+      tours = await tourService.getByListTourManId(
+        ids,
+        _req.query
+      )
+
+      break
+    }
+  }
 
   const response: IResponseObject<typeof tours> = {
     message: 'query success',
@@ -73,7 +127,6 @@ export async function getToursByManager(
     )
 
   const ids = tourMans.map((x) => x.id)
-  console.log(ids)
 
   const tours = await tourService.getByListTourManId(
     ids,

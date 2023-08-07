@@ -9,6 +9,7 @@ class TourAgentSalesController {
     res: Response
   ) {
     const { id } = req.params
+
     const record = await tourAgentSalesService.getByTourId(
       id
     )

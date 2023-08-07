@@ -25,18 +25,37 @@ router.get(
   asyncHandler(getToursByManager)
 )
 
+router.get(
+  '/withOperSales',
+  authorize(['Oper.Mamnager']),
+  asyncHandler(getToursByManager)
+)
+
 router.get('/listid', asyncHandler(getByListId))
 
 router.get(
   '/:id',
-  authorize(['Oper.TourMan', 'Oper.Mamnager']),
+  authorize([
+    'Oper.TourMan',
+    'Oper.Mamnager',
+    'Oper.Sales'
+  ]),
   findOne
 )
 
-router.get('/', authorize(), asyncHandler(getAll))
+router.get(
+  '/',
+  authorize([
+    'Oper.TourMan',
+    'Oper.Mamnager',
+    'Oper.Sales'
+  ]),
+  asyncHandler(getAll)
+)
+
 router.post(
   '/',
-  authorize(['Sys.Admin', 'Oper.Mamnager']),
+  authorize(['Oper.TourMan']),
   validateBody<ITour>(validateTour),
   create
 )

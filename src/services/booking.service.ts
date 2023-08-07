@@ -44,10 +44,9 @@ class BookingService {
   async getSalesBookingByTourMan(params: {
     tourId: string
     saleId: string
-    tourManId: string
+    userId: string
   }) {
-    const { tourId, saleId, tourManId } = params
-    await this.checkRoleTourMan(tourManId, tourId)
+    const { tourId, saleId, userId } = params
 
     return Booking.findAll({
       where: {

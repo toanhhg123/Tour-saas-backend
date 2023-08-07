@@ -162,6 +162,15 @@ export class AccountService {
     })
   }
 
+  public async findAccountById(id: string) {
+    const account = await Account.findByPk(id, {
+      include: [{ model: Role, as: 'role' }]
+    })
+    if (!account)
+      throw new ResponseError('Account not found', 400)
+    return account
+  }
+
   public async remove(id: string) {
     const record = await Account.findByPk(id)
 

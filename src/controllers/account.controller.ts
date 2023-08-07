@@ -128,10 +128,10 @@ export async function create(
 ): Promise<Response<IResponseObject<unknown>> | void> {
   const record = await accountService.create(
     req.body,
-    req.user?.id || ''
+    req.user.id
   )
 
-  const response: IResponseObject<any> = {
+  const response: IResponseObject<typeof record> = {
     message: 'query success',
     element: record,
     status: 'ok'

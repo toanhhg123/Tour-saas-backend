@@ -13,9 +13,14 @@ const useMiddlewares = async (app: Express) => {
   app.use(
     cors({
       credentials: true,
-      origin: ['http://localhost:3000']
+      origin: [
+        'http://localhost:3000',
+        'http://103.98.160.26:3000',
+        'http://robomain.com.vn'
+      ]
     })
   )
+
   app.use(helmet())
   app.use(
     session({

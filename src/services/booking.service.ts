@@ -41,6 +41,18 @@ class BookingService {
     })
   }
 
+  async getBookingByTourId(tourId: string) {
+    return Booking.findAll({
+      where: { tourId },
+      include: [
+        { model: Tour, as: 'tour' },
+        { model: Account, as: 'client' },
+        { model: Account, as: 'sale' },
+        { model: BookingPayment, as: 'bookingPayments' }
+      ]
+    })
+  }
+
   async getSalesBookingByTourMan(params: {
     tourId: string
     saleId: string

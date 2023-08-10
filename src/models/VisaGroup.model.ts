@@ -6,20 +6,6 @@ import type {
 } from 'sequelize'
 import { DataTypes, Model } from 'sequelize'
 
-export interface IVisaGroup {
-  id: string
-  name: string
-  submitedDate: Date
-  receiptCode: string
-  resultDate: Date
-  entryDate: Date
-  entryPort: string
-  entryHotel: string
-  itenerary: string
-  createdAt: Date
-  updatedAt: Date
-}
-
 class VisaGroup extends Model<
   InferAttributes<VisaGroup>,
   InferCreationAttributes<VisaGroup>
@@ -33,10 +19,13 @@ class VisaGroup extends Model<
   declare entryPort: string
   declare entryHotel: string
   declare itenerary: string
+  declare operVisaId: string
 
   declare createdAt: CreationOptional<Date>
   declare updatedAt: CreationOptional<Date>
 }
+
+export type IVisaGroup = InferAttributes<VisaGroup>
 
 VisaGroup.init(
   {
@@ -48,7 +37,10 @@ VisaGroup.init(
     name: {
       type: DataTypes.STRING
     },
-
+    operVisaId: {
+      type: DataTypes.UUID,
+      allowNull: true
+    },
     submitedDate: {
       type: DataTypes.DATE,
       defaultValue: DataTypes.NOW

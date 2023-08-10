@@ -11,9 +11,11 @@ import { Router } from 'express'
 
 const router = Router()
 
+router.use(authorize(['Oper.Visa']))
+
 router.get('/', authorize(), getAll)
 
-router.post('/', authorize(), create)
+router.post('/', authorize(['Oper.Visa']), create)
 
 router.patch('/:id', authorize(), update)
 

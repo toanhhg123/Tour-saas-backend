@@ -15,15 +15,7 @@ import express from 'express'
 
 const router = express.Router()
 
-router.use(
-  authorize([
-    'Sys.Admin',
-    'Agent.Sales',
-    'Oper.TourMan',
-    'Oper.Mamnager',
-    'Oper.Sales'
-  ])
-)
+router.use(authorize())
 
 router.post(
   '/',
@@ -31,7 +23,11 @@ router.post(
   asyncHandler(create)
 )
 
-router.get('/tour/:tourId', asyncHandler(getByTourId))
+router.get(
+  '/tour/:tourId',
+  authorize(['Oper.Sales']),
+  asyncHandler(getByTourId)
+)
 
 router.get('/tourman/:tourId', asyncHandler(getByTourMan))
 

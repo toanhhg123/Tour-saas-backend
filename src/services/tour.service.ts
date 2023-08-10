@@ -47,6 +47,12 @@ class TourService {
     return record
   }
 
+  public async fineById(tourId: string) {
+    const tour = await Tour.findByPk(tourId)
+    if (!tour) throw new Error('not found tour')
+    return tour
+  }
+
   public async remove(id: string) {
     await Promise.all([
       _tourService.removeByTourId(id),

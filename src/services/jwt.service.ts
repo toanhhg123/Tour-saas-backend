@@ -1,4 +1,5 @@
 import env from '@/config/env'
+import type { TypeRole } from '@/types/IAuthType'
 import jwt from 'jsonwebtoken'
 
 export interface IUserJwt {
@@ -9,6 +10,7 @@ export interface IUserJwt {
 
 export interface IDecodeRefesh {
   id: string
+  role: TypeRole | string
   [key: string]: string
 }
 

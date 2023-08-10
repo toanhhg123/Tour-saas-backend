@@ -195,12 +195,15 @@ VisaGroup.hasMany(VisaBooking, {
   foreignKey: 'visaGroupId'
 })
 
+VisaGroup.belongsTo(Account, {
+  as: 'operVisa',
+  foreignKey: 'operVisaId'
+})
+
 VisaBooking.belongsTo(VisaGroup, {
   as: 'visaGroup',
   foreignKey: 'visaGroupId'
 })
-
-// tour agent sale
 
 TourAgentSales.belongsTo(Account, {
   as: 'sales',

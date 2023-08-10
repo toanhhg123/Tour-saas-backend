@@ -35,7 +35,11 @@ export const authorize = (arr?: TypeRole[]) =>
 
       const decode = JwtService.decodeToken<IUserJwt>(token)
       const { role } = decode
-      if (arr && !arr.some((ar) => ar === role))
+      if (
+        arr &&
+        arr.length &&
+        !arr.some((ar) => ar === role)
+      )
         throw new ResponseError('forbidden', 403)
 
       req.user = decode

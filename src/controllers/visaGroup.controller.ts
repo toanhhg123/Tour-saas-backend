@@ -2,12 +2,16 @@ import type IResponseObject from '@/types/ResponseObject'
 import { VisaGroup } from '@/models'
 import type { Response, Request } from 'express'
 import type { IVisaGroup } from '@/models/VisaGroup.model'
+import visaGroupService from '@/services/visaGroup.service'
 
 export async function create(
   req: Request<unknown, unknown, IVisaGroup>,
   res: Response
 ): Promise<Response<IResponseObject<unknown>> | void> {
-  const record = await VisaGroup.create(req.body)
+  const record = await VisaGroup.create({
+    ...req.body,
+    operVisaId: req.user.id
+  })
 
   const response: IResponseObject<VisaGroup> = {
     message: 'query success',
@@ -21,7 +25,9 @@ export async function getAll(
   _req: Request<unknown, unknown>,
   res: Response
 ): Promise<Response<IResponseObject<unknown>> | void> {
-  const record = await VisaGroup.findAll()
+  const record = await visaGroupService.getByOperVisaId(
+    _req.user.id
+  )
 
   const response: IResponseObject<VisaGroup[]> = {
     message: 'query success',

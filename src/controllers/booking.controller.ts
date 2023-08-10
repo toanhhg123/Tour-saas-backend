@@ -8,8 +8,9 @@ import type {
 } from 'express'
 import type { IBooking } from '@/models/booking.model'
 import Tour from '@/models/tour.model'
-import TourAgentSales from '@/models/tourAgentSales.model'
 import bookingService from '@/services/booking.service'
+import permissionService from '@/services/permission.service'
+import tourService from '@/services/tour.service'
 
 export async function create(
   req: Request<unknown, unknown, IBooking>,
@@ -41,48 +42,41 @@ export async function create(
 
 export async function getByTourId(
   req: Request<{ tourId: string }, unknown>,
-  res: Response,
-  next: NextFunction
-): Promise<Response<IResponseObject<unknown>> | void> {
-  try {
-    const saleId = req.user?.id
-    const { tourId } = req.params
+  res: Response
+) {
+  const { id: userId, role } = req.user
+  const { tourId } = req.params
 
-    const isExist = await TourAgentSales.findOne({
-      where: {
+  switch (role) {
+    case 'Agent.Sales': {
+      await permissionService.checkAgentSaleInTour(
         tourId,
-        saleId: saleId
-      }
-    })
-
-    if (!isExist)
-      throw new ResponseError(
-        'bạn không có quyền để can thiệp vào phần này',
-        403
+        userId
       )
-
-    const record = await Booking.findAll({
-      where: {
-        tourId: req.params.tourId
-      },
-      include: [
-        { model: Tour, as: 'tour' },
-        { model: Account, as: 'client' },
-        { model: Account, as: 'sale' },
-        { model: BookingPayment, as: 'bookingPayments' }
-      ]
-    })
-
-    const response: IResponseObject<Booking[]> = {
-      message: 'query success',
-      element: record,
-      status: 'ok'
+      break
     }
 
-    return res.json(response)
-  } catch (error) {
-    next(error)
+    case 'Oper.Sales': {
+      const tour = await tourService.fineById(tourId)
+      await permissionService.checkSameCompany(
+        userId,
+        tour.tourManId
+      )
+      break
+    }
   }
+
+  const record = await bookingService.getBookingByTourId(
+    tourId
+  )
+
+  const response: IResponseObject<Booking[]> = {
+    message: 'query success',
+    element: record,
+    status: 'ok'
+  }
+
+  return res.json(response)
 }
 
 export async function getBookingSalesWithTourMan(
